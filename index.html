@@ -188,8 +188,8 @@ h1{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(30px,6vw,50px
 <!-- TOPBAR (quiz only) -->
 <div class="topbar" id="topbar">
   <div class="bar-track"><div class="bar-fill" id="barFill"></div></div>
-  <div class="bar-text" id="barText">已回答 0 / 25 題</div>
-  <div class="ab" id="abBadge">📝 0%</div>
+  <div class="bar-text" id="barText">已勾選 0 項</div>
+  <div class="ab" id="abBadge">✨ 0 分</div>
 </div>
 
 <!-- ════════ PAGE: QUIZ ════════ -->
@@ -198,19 +198,19 @@ h1{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(30px,6vw,50px
   <div class="hero">
     <div class="hero-tag">🎓 情意教育工具</div>
     <h1>台灣<span class="hl">特權</span>量表</h1>
-    <p class="hero-sub">在你 18 歲以前，有過哪些經歷？<br>全部題目作答後才能看見你的結果 👀</p>
+    <p class="hero-sub">在你 18 歲以前，有過哪些經歷？<br>符合就勾，不符合跳過，做完按送出 👀</p>
   </div>
 
   <div class="notice">
     <div class="notice-icon">💡</div>
-    <div>勾選你<strong>曾經有過</strong>的經歷，每一題都要回答才能送出。</div>
+    <div>勾選你<strong>曾經有過</strong>的經歷就好，不符合的題目不需要做任何動作。</div>
   </div>
 
   <div id="quizBody"></div>
 
   <div class="submit-wrap">
-    <button class="submit-btn" onclick="trySubmit()">看我的結果 🎯</button>
-    <div class="submit-hint" id="submitHint">還有 <strong id="remainCount">25</strong> 題未作答</div>
+    <button class="submit-btn" onclick="openConfirm()">看我的結果 🎯</button>
+    <div class="submit-hint">做完之後按這裡，不符合的題目不用管 😊</div>
   </div>
 
   <div class="reflection">
@@ -313,6 +313,17 @@ h1{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(30px,6vw,50px
   </div>
 </div>
 
+<!-- CONFIRM SUBMIT MODAL -->
+<div class="modal-bg" id="confirmBg">
+  <div class="modal">
+    <div style="font-size:40px;margin-bottom:12px;">🎯</div>
+    <h2>確定要送出嗎？</h2>
+    <p id="confirmMsg">你一共勾選了 <strong id="confirmCount">0</strong> 項。<br>送出後就會看到你的結果，無法再修改喔！</p>
+    <button class="modal-btn" onclick="confirmSubmit()" style="margin-bottom:10px;">確定送出</button>
+    <div><button class="page-btn" style="font-size:13px;" onclick="closeConfirm()">再想想 🤔</button></div>
+  </div>
+</div>
+
 <script>
 /* ══════════════════════════════
    DATA
@@ -395,7 +406,7 @@ function buildQuiz() {
 
     const hdr = document.createElement('div');
     hdr.className = 'cat-header';
-    hdr.innerHTML = `<div class="cat-pill">${cat.icon} ${cat.name}</div><div class="cat-count" id="cc${ci}">0 / ${cat.items.length} 已回答</div>`;
+    hdr.innerHTML = `<div class="cat-pill">${cat.icon} ${cat.name}</div><div class="cat-count" id="cc${ci}"></div>`;
     sec.appendChild(hdr);
 
     cat.items.forEach(it => {
@@ -420,58 +431,50 @@ function buildQuiz() {
    We store answered[id] = true (checked) or answered[id] = false (unchecked-but-touched)
 ══════════════════════════════ */
 function toggleItem(id, el, items, ci) {
-  el.classList.remove('unanswered');
   const wasChecked = el.classList.contains('checked');
   if (wasChecked) {
     el.classList.remove('checked');
-    answered[id] = false; // touched but unchecked = "No"
+    delete answered[id];
   } else {
     el.classList.add('checked');
     answered[id] = true;
     el.classList.remove('pop-anim'); void el.offsetWidth; el.classList.add('pop-anim');
   }
-  const done = items.filter(it => answered[it.id] !== undefined).length;
+  const done = items.filter(it => answered[it.id]).length;
   const cc = document.getElementById('cc'+ci);
-  if(cc) cc.textContent = done + ' / ' + items.length + ' 已回答';
+  if(cc) cc.textContent = done > 0 ? `✅ ${done} 項` : '';
   updateProgress();
 }
 
 function updateProgress() {
-  const done = Object.keys(answered).length;
-  const pct = Math.round(done / TOTAL * 100);
+  const checked = Object.keys(answered).length;
+  const score = posItems.filter(it => answered[it.id]).length;
+  const pct = Math.round(checked / TOTAL * 100);
   document.getElementById('barFill').style.width = pct + '%';
-  document.getElementById('barText').textContent = '已回答 ' + done + ' / ' + TOTAL + ' 題';
-  document.getElementById('abBadge').textContent = '📝 ' + pct + '%';
-  const remain = TOTAL - done;
-  document.getElementById('remainCount').textContent = remain;
-  document.getElementById('submitHint').textContent = remain > 0
-    ? `還有 ${remain} 題未作答（點兩下 = 不符合）`
-    : '✅ 全部作答完畢，可以送出了！';
+  document.getElementById('barText').textContent = '已勾選 ' + checked + ' 項';
+  document.getElementById('abBadge').textContent = '✨ ' + score + ' 分';
 }
 
 /* ══════════════════════════════
    SUBMIT
 ══════════════════════════════ */
+function openConfirm() {
+  const count = Object.keys(answered).length;
+  document.getElementById('confirmCount').textContent = count;
+  document.getElementById('confirmBg').classList.add('open');
+}
+function closeConfirm() {
+  document.getElementById('confirmBg').classList.remove('open');
+}
+function confirmSubmit() {
+  closeConfirm();
+  trySubmit();
+}
 function trySubmit() {
-  const unansw = allItems.filter(it => answered[it.id] === undefined).map(it => it.id);
-  if (unansw.length > 0) {
-    unansw.forEach(id => {
-      const el = document.getElementById('item-'+id);
-      if(!el) return;
-      el.classList.remove('unanswered'); void el.offsetWidth; el.classList.add('unanswered');
-    });
-    document.getElementById('item-'+unansw[0]).scrollIntoView({behavior:'smooth',block:'center'});
-    return;
-  }
-
-  // calculate
-  const score = posItems.filter(it => answered[it.id] === true).length;
-  const revChecked = new Set(revItems.filter(it => answered[it.id] === true).map(it => it.id));
-  const posChecked = new Set(posItems.filter(it => answered[it.id] === true).map(it => it.id));
-
-  // save submission
+  const score = posItems.filter(it => answered[it.id]).length;
+  const revChecked = new Set(revItems.filter(it => answered[it.id]).map(it => it.id));
+  const posChecked = new Set(posItems.filter(it => answered[it.id]).map(it => it.id));
   submissions.push({ score, posChecked, revChecked });
-
   renderResult(score, posChecked, revChecked);
 }
 
@@ -590,10 +593,10 @@ function goPage(id) {
 ══════════════════════════════ */
 function resetAll() {
   Object.keys(answered).forEach(k => delete answered[k]);
-  document.querySelectorAll('.item').forEach(el => el.classList.remove('checked','pop-anim','unanswered'));
+  document.querySelectorAll('.item').forEach(el => el.classList.remove('checked','pop-anim'));
   cats.forEach((cat,ci) => {
     const cc = document.getElementById('cc'+ci);
-    if(cc) cc.textContent = '0 / '+cat.items.length+' 已回答';
+    if(cc) cc.textContent = '';
   });
   updateProgress();
   goPage('pageQuiz');
