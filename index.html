@@ -1,290 +1,479 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>人員編號查詢系統</title>
-    <!-- 使用 Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- 使用 React 與 Babel CDN -->
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <!-- Lucide 圖標 -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
-        body { font-family: 'Noto Sans TC', sans-serif; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>台灣特權量表</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --mint:   #2dd4bf;
+  --yellow: #fbbf24;
+  --coral:  #fb7185;
+  --purple: #a78bfa;
+  --blue:   #60a5fa;
+  --green:  #4ade80;
+  --bg:     #f0fdf9;
+  --card:   #ffffff;
+  --text:   #1e293b;
+  --muted:  #64748b;
+  --border: #e2e8f0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Noto Sans TC', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before, body::after {
+  content: '';
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(80px);
+  opacity: 0.18;
+}
+body::before {
+  width: 500px; height: 500px;
+  background: var(--mint);
+  top: -100px; left: -100px;
+}
+body::after {
+  width: 400px; height: 400px;
+  background: var(--purple);
+  bottom: -80px; right: -80px;
+}
+
+/* topbar */
+.topbar {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(240,253,249,0.88);
+  backdrop-filter: blur(14px);
+  border-bottom: 2px solid var(--border);
+  padding: 10px 20px;
+  display: flex; align-items: center; gap: 12px;
+}
+.bar-track {
+  flex: 1; height: 10px;
+  background: #e2e8f0;
+  border-radius: 99px;
+  overflow: hidden;
+}
+.bar-fill {
+  height: 100%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, var(--mint), var(--blue));
+  width: 0%;
+  transition: width 0.4s cubic-bezier(.4,0,.2,1);
+}
+.bar-text {
+  font-size: 13px; font-weight: 700;
+  color: var(--muted); white-space: nowrap;
+  font-family: 'Nunito', sans-serif;
+}
+.score-badge {
+  background: var(--mint);
+  color: #fff;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900; font-size: 14px;
+  padding: 4px 14px; border-radius: 99px;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(45,212,191,0.35);
+  transition: transform 0.2s;
+}
+
+/* container */
+.container {
+  position: relative; z-index: 1;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 48px 20px 180px;
+}
+
+/* hero */
+.hero {
+  text-align: center;
+  margin-bottom: 52px;
+  animation: bounceIn 0.7s cubic-bezier(.36,.07,.19,.97) both;
+}
+.hero-tag {
+  display: inline-block;
+  background: var(--yellow);
+  color: #92400e;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800; font-size: 12px;
+  letter-spacing: 0.12em;
+  padding: 5px 14px; border-radius: 99px;
+  margin-bottom: 18px;
+  transform: rotate(-1.5deg);
+  display: inline-block;
+}
+h1 {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+  font-size: clamp(32px, 6vw, 52px);
+  line-height: 1.15; color: var(--text);
+  margin-bottom: 4px;
+}
+h1 .hl {
+  color: var(--mint);
+  position: relative; display: inline-block;
+}
+h1 .hl::after {
+  content: '';
+  position: absolute; left: 0; bottom: 2px;
+  width: 100%; height: 6px;
+  background: var(--yellow);
+  border-radius: 4px; z-index: -1; opacity: 0.65;
+}
+.hero-sub {
+  font-size: 15px; color: var(--muted);
+  margin-top: 14px; line-height: 1.85;
+  max-width: 460px; margin-left: auto; margin-right: auto;
+}
+
+/* category */
+.category {
+  margin-bottom: 40px;
+  opacity: 0; transform: translateY(24px);
+  animation: slideUp 0.55s ease forwards;
+}
+.category:nth-child(1){ animation-delay:.05s }
+.category:nth-child(2){ animation-delay:.12s }
+.category:nth-child(3){ animation-delay:.19s }
+.category:nth-child(4){ animation-delay:.26s }
+.category:nth-child(5){ animation-delay:.33s }
+
+.cat-header { display:flex; align-items:center; gap:10px; margin-bottom:14px; }
+.cat-pill {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800; font-size: 13px;
+  padding: 5px 16px; border-radius: 99px;
+  border: 2px solid transparent;
+}
+.cat-count {
+  font-size: 12px; color: var(--muted);
+  font-weight: 500; margin-left: auto;
+  font-family: 'Nunito', sans-serif;
+}
+
+.theme-mint  .cat-pill { background:#ccfbf1; color:#0f766e; border-color:#99f6e4; }
+.theme-blue  .cat-pill { background:#dbeafe; color:#1d4ed8; border-color:#bfdbfe; }
+.theme-coral .cat-pill { background:#ffe4e6; color:#be123c; border-color:#fecdd3; }
+.theme-purple .cat-pill{ background:#ede9fe; color:#6d28d9; border-color:#ddd6fe; }
+.theme-yellow .cat-pill{ background:#fef9c3; color:#92400e; border-color:#fde68a; }
+
+/* items */
+.item {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 18px;
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: 16px; margin-bottom: 8px;
+  cursor: pointer;
+  transition: transform .15s ease, border-color .2s, background .2s, box-shadow .2s;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.item:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.07); }
+.item:active { transform: scale(0.98); }
+
+.theme-mint  .item.checked { border-color:var(--mint);   background:#f0fefa; box-shadow:0 4px 16px rgba(45,212,191,.15); }
+.theme-blue  .item.checked { border-color:var(--blue);   background:#eff6ff; box-shadow:0 4px 16px rgba(96,165,250,.15); }
+.theme-coral .item.checked { border-color:var(--coral);  background:#fff1f2; box-shadow:0 4px 16px rgba(251,113,133,.15); }
+.theme-purple .item.checked{ border-color:var(--purple); background:#f5f3ff; box-shadow:0 4px 16px rgba(167,139,250,.15); }
+.theme-yellow .item.checked{ border-color:var(--yellow); background:#fffbeb; box-shadow:0 4px 16px rgba(251,191,36,.15); }
+
+.cb-wrap {
+  width:26px; height:26px; flex-shrink:0;
+  border-radius:8px; border:2.5px solid #cbd5e1;
+  display:flex; align-items:center; justify-content:center;
+  transition: all .2s cubic-bezier(.4,0,.2,1);
+  background:#fff;
+}
+.item.checked .cb-wrap { border-color:transparent; }
+.theme-mint  .item.checked .cb-wrap { background:var(--mint);   }
+.theme-blue  .item.checked .cb-wrap { background:var(--blue);   }
+.theme-coral .item.checked .cb-wrap { background:var(--coral);  }
+.theme-purple .item.checked .cb-wrap{ background:var(--purple); }
+.theme-yellow .item.checked .cb-wrap{ background:var(--yellow); }
+
+.ck {
+  width:14px; height:11px;
+  opacity:0; transform:scale(0.4) rotate(-10deg);
+  transition: all .22s cubic-bezier(.4,0,.2,1);
+}
+.item.checked .ck { opacity:1; transform:scale(1) rotate(0); }
+.ck path { stroke:#fff; stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round; fill:none; }
+
+.item-emoji { font-size:20px; flex-shrink:0; }
+.item-text  { flex:1; font-size:14.5px; color:#475569; line-height:1.6; transition:color .2s; }
+.item.checked .item-text { color:var(--text); font-weight:500; }
+.item-num   { font-family:'Nunito',sans-serif; font-size:12px; font-weight:700; color:#cbd5e1; flex-shrink:0; }
+.item.checked .item-num { color:#94a3b8; }
+
+/* result panel */
+.result-panel {
+  position:fixed; bottom:0; left:0; right:0; z-index:40;
+  transform:translateY(110%);
+  transition:transform .45s cubic-bezier(.4,0,.2,1);
+  background:#fff; border-top:3px solid var(--mint);
+  padding:18px 24px 26px;
+  box-shadow:0 -8px 40px rgba(0,0,0,0.1);
+}
+.result-panel.visible { transform:translateY(0); }
+.result-inner { max-width:720px; margin:0 auto; }
+
+.result-grid {
+  display:grid;
+  grid-template-columns: auto 1fr auto;
+  align-items:center; gap:20px;
+}
+.score-circle {
+  width:72px; height:72px; border-radius:50%;
+  background:linear-gradient(135deg,var(--mint),var(--blue));
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  box-shadow:0 4px 20px rgba(45,212,191,.4);
+  flex-shrink:0;
+}
+.score-big {
+  font-family:'Nunito',sans-serif; font-weight:900;
+  font-size:30px; color:#fff; line-height:1;
+}
+.score-of { font-size:10px; color:rgba(255,255,255,.75); font-family:'Nunito',sans-serif; font-weight:700; }
+
+.band-title {
+  font-family:'Nunito',sans-serif; font-weight:800;
+  font-size:15px; color:var(--text); margin-bottom:4px;
+}
+.band-desc { font-size:12.5px; color:var(--muted); line-height:1.6; }
+
+.dots-track { display:flex; gap:3px; flex-wrap:wrap; margin-top:8px; max-width:160px; }
+.dot { width:9px; height:9px; border-radius:50%; background:#e2e8f0; transition:all .25s ease; flex-shrink:0; }
+.dot.on { background:var(--mint); box-shadow:0 0 0 2px rgba(45,212,191,.3); transform:scale(1.15); }
+
+.reset-btn {
+  background:#f1f5f9; border:2px solid #e2e8f0;
+  color:var(--muted);
+  font-family:'Nunito',sans-serif; font-weight:700; font-size:13px;
+  padding:8px 16px; border-radius:12px;
+  cursor:pointer; transition:all .2s; white-space:nowrap;
+}
+.reset-btn:hover { background:#ffe4e6; border-color:var(--coral); color:var(--coral); }
+
+/* reflection */
+.reflection {
+  margin-top:48px;
+  background:linear-gradient(135deg,#f0fdf4,#eff6ff);
+  border:2px dashed #bfdbfe; border-radius:20px;
+  padding:24px 28px; font-size:14px;
+  color:var(--muted); line-height:1.85;
+  animation:slideUp .6s ease .5s both;
+}
+.ref-tag {
+  display:inline-block; background:var(--blue); color:#fff;
+  font-family:'Nunito',sans-serif; font-weight:800;
+  font-size:11px; letter-spacing:.1em;
+  padding:3px 10px; border-radius:99px; margin-bottom:10px;
+}
+
+/* keyframes */
+@keyframes bounceIn {
+  0%  { opacity:0; transform:scale(0.9) translateY(16px); }
+  60% { transform:scale(1.02) translateY(-4px); }
+  100%{ opacity:1; transform:scale(1) translateY(0); }
+}
+@keyframes slideUp {
+  from{ opacity:0; transform:translateY(24px); }
+  to  { opacity:1; transform:translateY(0); }
+}
+@keyframes popCheck {
+  0%  { transform:scale(1); }
+  35% { transform:scale(0.88); }
+  65% { transform:scale(1.1); }
+  100%{ transform:scale(1); }
+}
+.pop-anim { animation:popCheck .28s ease; }
+
+@media(max-width:520px){
+  .result-grid{ grid-template-columns:auto 1fr; }
+  .reset-btn{ grid-column:1/-1; justify-self:start; }
+  h1{ font-size:30px; }
+  .container{ padding:32px 14px 200px; }
+}
+</style>
 </head>
-<body class="bg-slate-50">
-    <div id="root"></div>
+<body>
 
-    <script type="text/babel">
-        const { useState, useMemo, useEffect } = React;
+<div class="topbar">
+  <div class="bar-track"><div class="bar-fill" id="barFill"></div></div>
+  <div class="bar-text" id="barText">0 / 20 題</div>
+  <div class="score-badge" id="scoreBadge">✨ 0 分</div>
+</div>
 
-        const App = () => {
-            // 資料庫 (整合 1-X 到 6-X 系列，並加入查詢範例)
-            const data = [
-                // 查詢範例
-                { id: '7-1', group: '數理組 監試人員', unit: '試務辦公室', name: '陳傑憲' },
-                
-                // 1-X 系列
-                { id: '1-0', group: '典試委員', unit: '國立台灣師範大學', name: '鄭聖敏' },
-                { id: '1-1', group: '召集人', unit: '新竹縣政府', name: '蔡淑貞' },
-                { id: '1-2', group: '副召集人', unit: '新竹縣政府', name: '沈靜濤' },
-                { id: '1-3', group: '總策畫', unit: '新竹縣政府', name: '范貴蟬' },
-                { id: '1-4', group: '副策畫', unit: '退休校長', name: '饒忠韻' },
-                { id: '1-5', group: '副策畫', unit: '碧潭國小校長', name: '曾道明' },
-                { id: '1-6', group: '副策畫', unit: '照門國小校長', name: '田育昆' },
-                { id: '1-7', group: '執行策劃', unit: '新竹縣政府', name: '張智翔' },
-                // 2-X 系列
-                { id: '2-1', group: '行政組 組長', unit: '勝利國中', name: '徐永明' },
-                { id: '2-2', group: '行政組 副組長', unit: '勝利國中', name: '徐韻瑛' },
-                { id: '2-3', group: '行政組 組員', unit: '勝利國中', name: '黃郁雯' },
-                { id: '2-4', group: '行政組 組員', unit: '勝利國中', name: '陳麗朱' },
-                { id: '2-5', group: '行政組 組員', unit: '勝利國中', name: '吳宜靜' },
-                { id: '2-6', group: '行政組 組員', unit: '勝利國中', name: '石佳儀' },
-                { id: '2-7', group: '行政組 組員', unit: '勝利國中', name: '李明' },
-                { id: '2-8', group: '試場佈置組 副組長', unit: '勝利國中', name: '方欣蕙' },
-                { id: '2-9', group: '試場佈置組 組員', unit: '勝利國中', name: '陳彥頤' },
-                { id: '2-10', group: '試場佈置組 組員', unit: '勝利國中', name: '徐意竹' },
-                { id: '2-11', group: '試場佈置組 組員', unit: '勝利國中', name: '余政翰' },
-                { id: '2-12', group: '試場佈置組 組員', unit: '勝利國中', name: '林文津' },
-                { id: '2-13', group: '試場佈置組 組員', unit: '勝利國中', name: '吳倩如' },
-                { id: '2-14', group: '總務組 副組長', unit: '勝利國中', name: '趙端蓉' },
-                { id: '2-15', group: '總務組 組員', unit: '勝利國中', name: '柯同洲' },
-                { id: '2-16', group: '總務組 組員', unit: '勝利國中', name: '張藍尹' },
-                { id: '2-17', group: '總務組 組員', unit: '勝利國中', name: '黃德欽' },
-                { id: '2-18', group: '總務組 組員', unit: '勝利國中', name: '吳宥葶' },
-                { id: '2-19', group: '總務組 組員', unit: '勝利國中', name: '林瑋力' },
-                { id: '2-20', group: '總務組 組員', unit: '勝利國中', name: '劉彧' },
-                { id: '2-21', group: '秩序組 副組長', unit: '勝利國中', name: '曾義強' },
-                { id: '2-22', group: '秩序組 組員', unit: '勝利國中', name: '莊馥萍' },
-                { id: '2-23', group: '秩序組 組員', unit: '勝利國中', name: '廖婉臻' },
-                { id: '2-24', group: '秩序組 組員', unit: '勝利國中', name: '郭安婕' },
-                { id: '2-25', group: '秩序組 組員', unit: '勝利國中', name: '陳怡均' },
-                { id: '2-26', group: '秩序組 組員', unit: '勝利國中', name: '簡惠美' },
-                { id: '2-27', group: '秩序組 組員', unit: '勝利國中', name: '林賢威' },
-                { id: '2-28', group: '秩序組 組員', unit: '勝利國中', name: '張惠晴' },
-                { id: '2-29', group: '秩序組 組員', unit: '勝利國中', name: '陳弘念' },
-                { id: '2-30', group: '秩序組 組員', unit: '勝利國中', name: '涂哲宏' },
-                { id: '2-31', group: '秩序組 組員', unit: '勝利國中', name: '林冠婷' },
-                { id: '2-32', group: '秩序組 組員', unit: '勝利國中', name: '吳巧雯' },
-                { id: '2-33', group: '秩序組 組員', unit: '勝利國中', name: '吳佳華' },
-                { id: '2-34', group: '秩序組 組員', unit: '勝利國中', name: '曾逸瑤' },
-                { id: '2-35', group: '秩序組 組員', unit: '勝利國中', name: '王涵羽' },
-                { id: '2-36', group: '會計組 組長', unit: '勝利國中', name: '黃玉雯' },
-                { id: '2-37', group: '會計組 副組長', unit: '勝利國中', name: '黃慧茹' },
-                { id: '2-38', group: '醫護組 組員', unit: '勝利國中', name: '蔡岫虹' },
-                { id: '2-39', group: '醫護組 副組長', unit: '勝利國中', name: '林雨勤' },
-                // 3-X 系列
-                { id: '3-1', group: '語文組 組長', unit: '成功國中', name: '陳雯玲' },
-                { id: '3-2', group: '語文組 副組長', unit: '成功國中', name: '魏瓊玲' },
-                { id: '3-3', group: '數理組 組長', unit: '博愛國中', name: '郭雅玲' },
-                { id: '3-4', group: '數理組 組長', unit: '博愛國中', name: '施靜泓' },
-                // 4-X 系列
-                { id: '4-1', group: '數理組 組長', unit: '東興國中', name: '林健明' },
-                { id: '4-2', group: '數理組 副組長', unit: '東興國中', name: '張得歆' },
-                { id: '4-3', group: '數理組 組員', unit: '東興國中', name: '劉芷帆' },
-                { id: '4-4', group: '數理組 組員', unit: '東興國中', name: '方郁涵' },
-                { id: '4-5', group: '數理組 組員', unit: '東興國中', name: '余奕憲' },
-                { id: '4-6', group: '數理組 組員', unit: '東興國中', name: '許睿絜' },
-                { id: '4-7', group: '數理組 組員', unit: '東興國中', name: '曾靜筠' },
-                { id: '4-8', group: '數理組 組員', unit: '東興國中', name: '吳思韻' },
-                { id: '4-9', group: '數理組 組長', unit: '仁愛國中', name: '劉安倫' },
-                { id: '4-10', group: '數理組 副組長', unit: '仁愛國中', name: '宋美紅' },
-                { id: '4-11', group: '數理組 組員', unit: '仁愛國中', name: '蔣忠惠' },
-                { id: '4-12', group: '數理組 組員', unit: '仁愛國中', name: '王潔敏' },
-                { id: '4-13', group: '數理組 組員', unit: '仁愛國中', name: '曾新容' },
-                { id: '4-14', group: '數理組 組員', unit: '仁愛國中', name: '古馨蘭' },
-                { id: '4-15', group: '數理組 組員', unit: '仁愛國中', name: '張瑜玲' },
-                { id: '4-16', group: '語文組 組長', unit: '自強國中', name: '朱紋秀' },
-                { id: '4-17', group: '語文組 副組長', unit: '自強國中', name: '黃友倫' },
-                { id: '4-18', group: '語文組 組員', unit: '自強國中', name: '林靜秋' },
-                { id: '4-19', group: '語文組 組員', unit: '自強國中', name: '林慧蓉' },
-                // 5-X 系列
-                { id: '5-1', group: '數理組 監試人員', unit: '成功國中', name: '賴芊瑜' },
-                { id: '5-2', group: '數理組 監試人員', unit: '成功國中', name: '廖源弘' },
-                { id: '5-3', group: '數理組 監試人員', unit: '成功國中', name: '張唯坪' },
-                { id: '5-4', group: '數理組 監試人員', unit: '成功國中', name: '徐睦賢' },
-                { id: '5-5', group: '數理組 監試人員', unit: '成功國中', name: '王天行' },
-                { id: '5-6', group: '數理組 監試人員', unit: '成功國中', name: '陳音穎' },
-                { id: '5-7', group: '數理組 監試人員', unit: '成功國中', name: '黃伶莉' },
-                { id: '5-8', group: '數理組 監試人員', unit: '成功國中', name: '許雲景' },
-                { id: '5-9', group: '數理組 監試人員', unit: '成功國中', name: '余欣樺' },
-                { id: '5-10', group: '數理組 監試人員', unit: '成功國中', name: '劉庭君' },
-                { id: '5-11', group: '數理組 監試人員', unit: '東興國中', name: '吳宗修' },
-                { id: '5-12', group: '數理組 監試人員', unit: '東興國中', name: '黃意婷' },
-                { id: '5-13', group: '數理組 監試人員', unit: '東興國中', name: '吳立中' },
-                { id: '5-14', group: '數理組 監試人員', unit: '東興國中', name: '林弘霖' },
-                { id: '5-15', group: '數理組 監試人員', unit: '東興國中', name: '戴嘉瑋' },
-                { id: '5-16', group: '數理組 監試人員', unit: '東興國中', name: '洪聖宇' },
-                { id: '5-17', group: '數理組 監試人員', unit: '東興國中', name: '卓怡薇' },
-                { id: '5-18', group: '數理組 監試人員', unit: '東興國中', name: '王蕙菁' },
-                { id: '5-19', group: '數理組 監試人員', unit: '東興國中', name: '李易儒' },
-                { id: '5-20', group: '數理組 監試人員', unit: '東興國中', name: '李賜珍' },
-                { id: '5-21', group: '數理組 監試人員', unit: '勝利國中', name: '謝筱莉' },
-                { id: '5-22', group: '數理組 監試人員', unit: '勝利國中', name: '陳家綺' },
-                { id: '5-23', group: '數理組 監試人員', unit: '勝利國中', name: '蔡宛均' },
-                { id: '5-24', group: '數理組 監試人員', unit: '勝利國中', name: '李智瑋' },
-                { id: '5-25', group: '數理組 監試人員', unit: '勝利國中', name: '劉宛甄' },
-                { id: '5-26', group: '數理組 監試人員', unit: '勝利國中', name: '葉琬瑩' },
-                { id: '5-27', group: '數理組 監試人員', unit: '仁愛國中', name: '陳惠君' },
-                { id: '5-28', group: '數理組 監試人員', unit: '仁愛國中', name: '吳育蓉' },
-                { id: '5-29', group: '數理組 監試人員', unit: '鍾雨真', name: '鍾雨真' },
-                { id: '5-30', group: '數理組 監試人員', unit: '仁愛國中', name: '黃愛雅' },
-                { id: '5-31', group: '數理組 監試人員', unit: '仁愛國中', name: '廖翊岑' },
-                { id: '5-32', group: '數理組 監試人員', unit: '博愛國中', name: '陳雅婷' },
-                { id: '5-33', group: '數理組 監試人員', unit: '博愛國中', name: '吳榮光' },
-                { id: '5-34', group: '數理組 監試人員', unit: '博愛國中', name: '呂英曄' },
-                { id: '5-35', group: '數理組 監試人員', unit: '博愛國中', name: '林庭娟' },
-                { id: '5-36', group: '數理組 監試人員', unit: '博愛國中', name: '彭怡然' },
-                { id: '5-37', group: '數理組 監試人員', unit: '自強國中', name: '蔡鈴珍' },
-                { id: '5-38', group: '數理組 監試人員', unit: '自強國中', name: '鄭芬如' },
-                { id: '5-39', group: '數理組 監試人員', unit: '自強國中', name: '葉碧桃' },
-                { id: '5-40', group: '數理組 監試人員', unit: '自強國中', name: '龔亭仔' },
-                { id: '5-41', group: '數理組 監試人員', unit: '自強國中', name: '劉玉婷' },
-                { id: '5-42', group: '數理組 監試人員', unit: '文興國中', name: '陳慧君' },
-                { id: '5-43', group: '數理組 監試人員', unit: '竹北國中', name: '姜信安' },
-                { id: '5-44', group: '數理組 監試人員', unit: '新湖國中', name: '劉康文' },
-                // 6-X 系列
-                { id: '6-1', group: '語文組 監試人員', unit: '成功國中', name: '范美瓊' },
-                { id: '6-2', group: '語文組 監試人員', unit: '成功國中', name: '周春綢' },
-                { id: '6-3', group: '語文組 監試人員', unit: '成功國中', name: '劉華娟' },
-                { id: '6-4', group: '語文組 監試人員', unit: '東興國中', name: '張家榮' },
-                { id: '6-5', group: '語文組 監試人員', unit: '東興國中', name: '李慧雯' },
-                { id: '6-6', group: '語文組 監試人員', unit: '東興國中', name: '鄭凱豪' },
-                { id: '6-7', group: '語文組 監試人員', unit: '勝利國中', name: '李美玟' },
-                { id: '6-8', group: '語文組 監試人員', unit: '勝利國中', name: '王俐珍' },
-                { id: '6-9', group: '語文組 監試人員', unit: '仁愛國中', name: '吳李洋' },
-                { id: '6-10', group: '語文組 監試人員', unit: '仁愛國中', name: '蘇萃茹' },
-                { id: '6-11', group: '語文組 監試人員', unit: '博愛國中', name: '林思妤' },
-                { id: '6-12', group: '語文組 監試人員', unit: '博愛國中', name: '林昱吟' },
-                { id: '6-13', group: '語文組 監試人員', unit: '自強國中', name: '陳怡樺' },
-                { id: '6-14', group: '語文組 監試人員', unit: '自強國中', name: '詹佳琪' },
-            ];
+<div class="container">
+  <div class="hero">
+    <div class="hero-tag">🎓 情意教育工具</div>
+    <h1>台灣<span class="hl">特權</span>量表</h1>
+    <p class="hero-sub">
+      在你 18 歲以前，有過哪些經歷？<br>
+      點選符合的項目，誠實作答就好 — 沒有對錯，只有看見 👀
+    </p>
+  </div>
 
-            const [searchTerm, setSearchTerm] = useState('');
+  <div id="quizBody"></div>
 
-            const filteredData = useMemo(() => {
-                const term = searchTerm.trim();
-                if (!term) return [];
-                return data.filter(item => 
-                    item.name.includes(term) || item.id.includes(term) || item.unit.includes(term)
-                );
-            }, [searchTerm]);
+  <div class="reflection">
+    <div class="ref-tag">💡 給自己的提醒</div>
+    <p>分數不代表你的努力多寡，也不代表你的價值高低。<br>
+    它描述的是你出發時，有多少資源被擺在你身旁。<br>
+    <strong>看見自己的起點，是理解別人處境的第一步。</strong></p>
+  </div>
+</div>
 
-            // 判斷地點的輔助函數
-            const getOfficeLocation = (group) => {
-                if (group.includes('數理組')) return '數理組試務中心-會議室';
-                if (group.includes('語文組')) return '語文組試務中心-多功能教室';
-                return null;
-            };
+<div class="result-panel" id="resultPanel">
+  <div class="result-inner">
+    <div class="result-grid">
+      <div class="score-circle">
+        <div class="score-big" id="scoreNum">0</div>
+        <div class="score-of">/ 20</div>
+      </div>
+      <div>
+        <div class="band-title" id="bandTitle">—</div>
+        <div class="band-desc" id="bandDesc">開始點選，看看你的起點在哪裡！</div>
+        <div class="dots-track" id="dotsTrack"></div>
+      </div>
+      <button class="reset-btn" onclick="resetAll()">🔄 重新作答</button>
+    </div>
+  </div>
+</div>
 
-            return (
-                <div className="min-h-screen p-4 md:p-8">
-                    <div className="max-w-2xl mx-auto">
-                        <header className="mb-8 text-center">
-                            <div className="inline-flex items-center justify-center p-3 bg-white rounded-2xl shadow-sm mb-4">
-                                <i data-lucide="users" className="text-blue-600 h-8 w-8"></i>
-                            </div>
-                            <h1 className="text-3xl font-black text-slate-800 mb-2">人員編號查詢系統</h1>
-                            <p className="text-slate-500 italic">請輸入姓名查詢您的職務資訊</p>
-                        </header>
+<script>
+const cats = [
+  { theme:'theme-mint',   icon:'🏠', name:'居住與空間', items:[
+    {id:1,  e:'🛏️', t:'有自己的房間'},
+    {id:2,  e:'💻', t:'有自己的電腦'},
+  ]},
+  { theme:'theme-blue',   icon:'📚', name:'教育資源', items:[
+    {id:3,  e:'👨‍🏫', t:'接受過一對一家教'},
+    {id:4,  e:'🏆', t:'參加過付費資優／競賽／外語檢定培訓班'},
+    {id:5,  e:'🎵', t:'付費學過樂器、舞蹈或美術任一項一年以上'},
+  ]},
+  { theme:'theme-coral',  icon:'🎾', name:'休閒與體驗', items:[
+    {id:6,  e:'⛷️', t:'付費學過網球、高爾夫、滑雪或潛水任一項'},
+    {id:7,  e:'😁', t:'接受過牙齒矯正或心理諮商任一（或家裡負擔得起）'},
+    {id:8,  e:'🎮', t:'家中有當時熱門的遊戲主機（任天堂、PS 系列、Xbox 等）'},
+  ]},
+  { theme:'theme-purple', icon:'🏡', name:'家庭條件', items:[
+    {id:9,  e:'🧹', t:'家中長期雇用清潔人員或家務支援'},
+    {id:10, e:'🎓', t:'家長都有大學畢業以上學歷'},
+    {id:11, e:'🚗', t:'家裡有兩輛車以上'},
+    {id:12, e:'🏙️', t:'家裡在台北市有住宅'},
+    {id:13, e:'📈', t:'家長有為你配置信託、基金、股票或保單任一'},
+  ]},
+  { theme:'theme-yellow', icon:'✈️', name:'國際視野', items:[
+    {id:14, e:'🌏', t:'出國旅遊過'},
+    {id:15, e:'🗽', t:'去過美國、加拿大或歐洲任一'},
+    {id:16, e:'🛫', t:'搭過商務艙以上艙等'},
+    {id:17, e:'🏫', t:'家裡有幫你規劃出國讀書'},
+    {id:18, e:'⛺', t:'參加過海外夏令營或冬令營'},
+    {id:19, e:'🌐', t:'讀過國際學校或雙語私校'},
+    {id:20, e:'🛂', t:'擁有雙重國籍、他國永久居留或長期居留權'},
+  ]},
+];
 
-                        <div className="relative mb-10 group">
-                            <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-slate-400">
-                                <i data-lucide="search" className="h-6 w-6"></i>
-                            </div>
-                            <input
-                                type="text"
-                                className="block w-full pl-14 pr-4 py-5 border-2 border-slate-200 rounded-[2rem] leading-5 bg-white shadow-sm placeholder-slate-300 focus:outline-none focus:ring-8 focus:ring-blue-500/5 focus:border-blue-500 transition-all text-xl"
-                                placeholder="請輸入姓名 (例如：陳傑憲)..."
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                            />
-                        </div>
+const bands = [
+  {min:0,  max:4,  title:'資源有限的起點 🌱', desc:'你在相對匱乏的環境中成長，每一步的前進都需要多付出許多力氣。'},
+  {min:5,  max:9,  title:'中等資源的起點 🌿', desc:'你擁有一些基本資源，但仍有許多機會是你靠自己爭取的。'},
+  {min:10, max:14, title:'資源豐富的起點 🌳', desc:'你成長在相對充裕的環境，許多理所當然的條件並非人人都有。'},
+  {min:15, max:20, title:'高度優勢的起點 🚀', desc:'你擁有許多結構性優勢，這些資源為你打開很多門，值得思考如何回饋。'},
+];
 
-                        <div className="space-y-4">
-                            {!searchTerm.trim() ? (
-                                <div className="text-center py-20 bg-white rounded-[2.5rem] border border-slate-100 shadow-sm transition-all">
-                                    <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-blue-50 text-blue-200 mb-6">
-                                        <i data-lucide="user-search" className="h-12 w-12"></i>
-                                    </div>
-                                    <h3 className="text-slate-600 text-xl font-bold mb-2">請輸入關鍵字</h3>
-                                    <p className="text-slate-400 px-12 leading-relaxed font-medium">系統已備妥資料，輸入姓名即刻查詢。</p>
-                                </div>
-                            ) : filteredData.length > 0 ? (
-                                filteredData.map((item, index) => {
-                                    const office = getOfficeLocation(item.group);
-                                    return (
-                                        <div key={index} className="bg-white p-6 rounded-[2rem] shadow-md border-2 border-transparent hover:border-blue-100 hover:shadow-xl transition-all group overflow-hidden animate-in fade-in slide-in-from-top-2">
-                                            <div className="flex flex-col gap-6">
-                                                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                                                    <div className="flex items-center gap-5">
-                                                        <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-700 flex-shrink-0 flex items-center justify-center text-white shadow-lg group-hover:rotate-2 transition-transform">
-                                                            <i data-lucide="user" className="h-8 w-8"></i>
-                                                        </div>
-                                                        <div>
-                                                            <h2 className="text-2xl font-black text-slate-800 tracking-tight">{item.name}</h2>
-                                                            <div className="flex items-center gap-1.5 text-slate-500 mt-1 font-semibold">
-                                                                <i data-lucide="building-2" className="h-4 w-4 text-indigo-400"></i>
-                                                                <span>{item.unit}</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div className="flex flex-col border-t md:border-t-0 pt-5 md:pt-0">
-                                                        <span className="text-[10px] font-bold text-blue-500 uppercase tracking-widest mb-1">人員編號</span>
-                                                        <div className="flex items-center text-slate-900 font-black text-3xl">
-                                                            <span>{item.id}</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                
-                                                {office && (
-                                                    <div className="bg-blue-50/50 p-4 rounded-2xl border border-blue-100 flex items-center gap-3">
-                                                        <div className="bg-blue-600 p-2 rounded-lg text-white shadow-sm">
-                                                            <i data-lucide="map-pin" className="h-4 w-4"></i>
-                                                        </div>
-                                                        <div>
-                                                            <span className="text-[10px] font-bold text-blue-500 uppercase tracking-widest block">試務報到地點</span>
-                                                            <span className="text-blue-900 font-bold">{office}</span>
-                                                        </div>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-                                    );
-                                })
-                            ) : (
-                                <div className="text-center py-16 bg-white rounded-[2.5rem] border border-dashed border-red-200">
-                                    <p className="text-red-500 font-bold text-lg">查無此人</p>
-                                    <p className="text-slate-400 text-sm">請確認姓名輸入是否正確。</p>
-                                </div>
-                            )}
-                        </div>
+const checked = new Set();
+const TOTAL = 20;
 
-                        <footer className="mt-16 text-center text-slate-400 pb-12">
-                            <div className="flex flex-wrap justify-center gap-2 mb-6 opacity-60">
-                                {['1-X', '2-X', '3-X', '4-X', '5-X', '6-X'].map(cat => (
-                                    <span key={cat} className="px-3 py-1 bg-slate-200 rounded-lg text-[9px] font-black text-slate-600">{cat} 系列匯入完成</span>
-                                ))}
-                            </div>
-                            <p className="text-sm font-bold text-slate-500">當前資料庫共計：129 位工作人員</p>
-                        </footer>
-                    </div>
-                </div>
-            );
-        };
+function build() {
+  const body = document.getElementById('quizBody');
+  cats.forEach((cat, ci) => {
+    const sec = document.createElement('div');
+    sec.className = `category ${cat.theme}`;
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
+    const hdr = document.createElement('div');
+    hdr.className = 'cat-header';
+    hdr.innerHTML = `<div class="cat-pill">${cat.icon} ${cat.name}</div><div class="cat-count" id="cc${ci}">${cat.items.length} 項</div>`;
+    sec.appendChild(hdr);
 
-        // 初始化 Lucide 圖標
-        setTimeout(() => {
-            if (window.lucide) window.lucide.createIcons();
-        }, 500);
-    </script>
+    cat.items.forEach(it => {
+      const div = document.createElement('div');
+      div.className = 'item';
+      div.id = 'i' + it.id;
+      div.innerHTML = `
+        <div class="cb-wrap"><svg class="ck" viewBox="0 0 14 11"><path d="M1.5 5.5L5.5 9.5L12.5 1.5"/></svg></div>
+        <div class="item-emoji">${it.e}</div>
+        <div class="item-text">${it.t}</div>
+        <div class="item-num">${it.id}</div>`;
+      div.addEventListener('click', () => toggle(it.id, div, cat.items, ci));
+      sec.appendChild(div);
+    });
+    body.appendChild(sec);
+  });
+
+  const track = document.getElementById('dotsTrack');
+  for (let i = 1; i <= TOTAL; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot'; d.id = 'd' + i;
+    track.appendChild(d);
+  }
+}
+
+function toggle(id, el, items, ci) {
+  if (checked.has(id)) {
+    checked.delete(id);
+    el.classList.remove('checked');
+    document.getElementById('d'+id).classList.remove('on');
+  } else {
+    checked.add(id);
+    el.classList.add('checked');
+    document.getElementById('d'+id).classList.add('on');
+    el.classList.remove('pop-anim'); void el.offsetWidth;
+    el.classList.add('pop-anim');
+  }
+  const n = items.filter(it => checked.has(it.id)).length;
+  const cc = document.getElementById('cc'+ci);
+  if(cc) cc.textContent = n > 0 ? `✅ ${n} / ${items.length}` : `${items.length} 項`;
+  updateUI();
+}
+
+function updateUI() {
+  const s = checked.size;
+  document.getElementById('barFill').style.width = (s/TOTAL*100)+'%';
+  document.getElementById('barText').textContent = s+' / '+TOTAL+' 題';
+  document.getElementById('scoreBadge').textContent = '✨ '+s+' 分';
+  document.getElementById('resultPanel').classList.toggle('visible', s > 0);
+  const sn = document.getElementById('scoreNum');
+  sn.textContent = s;
+  sn.classList.remove('pop-anim'); void sn.offsetWidth; sn.classList.add('pop-anim');
+  const b = bands.find(b => s>=b.min && s<=b.max);
+  if(b){ document.getElementById('bandTitle').textContent=b.title; document.getElementById('bandDesc').textContent=b.desc; }
+}
+
+function resetAll() {
+  checked.clear();
+  document.querySelectorAll('.item').forEach(el => el.classList.remove('checked','pop-anim'));
+  document.querySelectorAll('.dot').forEach(d => d.classList.remove('on'));
+  cats.forEach((cat,ci)=>{ const cc=document.getElementById('cc'+ci); if(cc) cc.textContent=cat.items.length+' 項'; });
+  document.getElementById('resultPanel').classList.remove('visible');
+  updateUI();
+}
+
+build();
+</script>
 </body>
 </html>
