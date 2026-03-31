@@ -6,400 +6,388 @@
 <title>台灣特權量表</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --mint:#2dd4bf;--yellow:#fbbf24;--coral:#fb7185;
+  --purple:#a78bfa;--blue:#60a5fa;--green:#4ade80;
+  --bg:#f0fdf9;--card:#fff;--text:#1e293b;
+  --muted:#64748b;--border:#e2e8f0;
+}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans TC',sans-serif;min-height:100vh;overflow-x:hidden;}
+body::before,body::after{content:'';position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(80px);opacity:.18;}
+body::before{width:500px;height:500px;background:var(--mint);top:-100px;left:-100px;}
+body::after{width:400px;height:400px;background:var(--purple);bottom:-80px;right:-80px;}
 
-:root {
-  --mint:   #2dd4bf;
-  --yellow: #fbbf24;
-  --coral:  #fb7185;
-  --purple: #a78bfa;
-  --blue:   #60a5fa;
-  --green:  #4ade80;
-  --bg:     #f0fdf9;
-  --card:   #ffffff;
-  --text:   #1e293b;
-  --muted:  #64748b;
-  --border: #e2e8f0;
-}
-
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'Noto Sans TC', sans-serif;
-  min-height: 100vh;
-  overflow-x: hidden;
-}
-
-body::before, body::after {
-  content: '';
-  position: fixed;
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 0;
-  filter: blur(80px);
-  opacity: 0.18;
-}
-body::before {
-  width: 500px; height: 500px;
-  background: var(--mint);
-  top: -100px; left: -100px;
-}
-body::after {
-  width: 400px; height: 400px;
-  background: var(--purple);
-  bottom: -80px; right: -80px;
-}
+/* pages */
+.page{position:relative;z-index:1;display:none;}
+.page.active{display:block;}
 
 /* topbar */
-.topbar {
-  position: sticky; top: 0; z-index: 50;
-  background: rgba(240,253,249,0.88);
-  backdrop-filter: blur(14px);
-  border-bottom: 2px solid var(--border);
-  padding: 10px 20px;
-  display: flex; align-items: center; gap: 12px;
-}
-.bar-track {
-  flex: 1; height: 10px;
-  background: #e2e8f0;
-  border-radius: 99px;
-  overflow: hidden;
-}
-.bar-fill {
-  height: 100%;
-  border-radius: 99px;
-  background: linear-gradient(90deg, var(--mint), var(--blue));
-  width: 0%;
-  transition: width 0.4s cubic-bezier(.4,0,.2,1);
-}
-.bar-text {
-  font-size: 13px; font-weight: 700;
-  color: var(--muted); white-space: nowrap;
-  font-family: 'Nunito', sans-serif;
-}
-.score-badge {
-  background: var(--mint);
-  color: #fff;
-  font-family: 'Nunito', sans-serif;
-  font-weight: 900; font-size: 14px;
-  padding: 4px 14px; border-radius: 99px;
-  white-space: nowrap;
-  box-shadow: 0 2px 8px rgba(45,212,191,0.35);
-  transition: transform 0.2s;
-}
+.topbar{position:sticky;top:0;z-index:50;background:rgba(240,253,249,.92);backdrop-filter:blur(14px);border-bottom:2px solid var(--border);padding:10px 20px;display:flex;align-items:center;gap:12px;}
+.bar-track{flex:1;height:10px;background:#e2e8f0;border-radius:99px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--mint),var(--blue));width:0%;transition:width .4s cubic-bezier(.4,0,.2,1);}
+.bar-text{font-size:13px;font-weight:700;color:var(--muted);white-space:nowrap;font-family:'Nunito',sans-serif;}
+.ab{background:var(--mint);color:#fff;font-family:'Nunito',sans-serif;font-weight:900;font-size:14px;padding:4px 14px;border-radius:99px;white-space:nowrap;box-shadow:0 2px 8px rgba(45,212,191,.35);}
 
 /* container */
-.container {
-  position: relative; z-index: 1;
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 48px 20px 180px;
-}
+.wrap{max-width:720px;margin:0 auto;padding:48px 20px 160px;}
+.wrap-result{max-width:720px;margin:0 auto;padding:40px 20px 80px;}
 
 /* hero */
-.hero {
-  text-align: center;
-  margin-bottom: 52px;
-  animation: bounceIn 0.7s cubic-bezier(.36,.07,.19,.97) both;
-}
-.hero-tag {
-  display: inline-block;
-  background: var(--yellow);
-  color: #92400e;
-  font-family: 'Nunito', sans-serif;
-  font-weight: 800; font-size: 12px;
-  letter-spacing: 0.12em;
-  padding: 5px 14px; border-radius: 99px;
-  margin-bottom: 18px;
-  transform: rotate(-1.5deg);
-  display: inline-block;
-}
-h1 {
-  font-family: 'Nunito', sans-serif;
-  font-weight: 900;
-  font-size: clamp(32px, 6vw, 52px);
-  line-height: 1.15; color: var(--text);
-  margin-bottom: 4px;
-}
-h1 .hl {
-  color: var(--mint);
-  position: relative; display: inline-block;
-}
-h1 .hl::after {
-  content: '';
-  position: absolute; left: 0; bottom: 2px;
-  width: 100%; height: 6px;
-  background: var(--yellow);
-  border-radius: 4px; z-index: -1; opacity: 0.65;
-}
-.hero-sub {
-  font-size: 15px; color: var(--muted);
-  margin-top: 14px; line-height: 1.85;
-  max-width: 460px; margin-left: auto; margin-right: auto;
-}
+.hero{text-align:center;margin-bottom:52px;animation:bounceIn .7s cubic-bezier(.36,.07,.19,.97) both;}
+.hero-tag{display:inline-block;background:var(--yellow);color:#92400e;font-family:'Nunito',sans-serif;font-weight:800;font-size:12px;letter-spacing:.12em;padding:5px 14px;border-radius:99px;margin-bottom:18px;transform:rotate(-1.5deg);}
+h1{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(30px,6vw,50px);line-height:1.15;color:var(--text);margin-bottom:4px;}
+.hl{color:var(--mint);position:relative;display:inline-block;}
+.hl::after{content:'';position:absolute;left:0;bottom:2px;width:100%;height:6px;background:var(--yellow);border-radius:4px;z-index:-1;opacity:.65;}
+.hero-sub{font-size:15px;color:var(--muted);margin-top:14px;line-height:1.85;max-width:460px;margin-left:auto;margin-right:auto;}
+
+/* notice */
+.notice{background:#fffbeb;border:2px solid #fde68a;border-radius:16px;padding:14px 18px;margin-bottom:36px;font-size:13.5px;color:#92400e;line-height:1.7;display:flex;gap:10px;align-items:flex-start;}
+.notice-icon{font-size:20px;flex-shrink:0;margin-top:1px;}
 
 /* category */
-.category {
-  margin-bottom: 40px;
-  opacity: 0; transform: translateY(24px);
-  animation: slideUp 0.55s ease forwards;
-}
-.category:nth-child(1){ animation-delay:.05s }
-.category:nth-child(2){ animation-delay:.12s }
-.category:nth-child(3){ animation-delay:.19s }
-.category:nth-child(4){ animation-delay:.26s }
-.category:nth-child(5){ animation-delay:.33s }
-
-.cat-header { display:flex; align-items:center; gap:10px; margin-bottom:14px; }
-.cat-pill {
-  font-family: 'Nunito', sans-serif;
-  font-weight: 800; font-size: 13px;
-  padding: 5px 16px; border-radius: 99px;
-  border: 2px solid transparent;
-}
-.cat-count {
-  font-size: 12px; color: var(--muted);
-  font-weight: 500; margin-left: auto;
-  font-family: 'Nunito', sans-serif;
-}
-
-.theme-mint  .cat-pill { background:#ccfbf1; color:#0f766e; border-color:#99f6e4; }
-.theme-blue  .cat-pill { background:#dbeafe; color:#1d4ed8; border-color:#bfdbfe; }
-.theme-coral .cat-pill { background:#ffe4e6; color:#be123c; border-color:#fecdd3; }
-.theme-purple .cat-pill{ background:#ede9fe; color:#6d28d9; border-color:#ddd6fe; }
-.theme-yellow .cat-pill{ background:#fef9c3; color:#92400e; border-color:#fde68a; }
+.category{margin-bottom:40px;opacity:0;transform:translateY(24px);animation:slideUp .55s ease forwards;}
+.category:nth-child(1){animation-delay:.05s}.category:nth-child(2){animation-delay:.12s}
+.category:nth-child(3){animation-delay:.19s}.category:nth-child(4){animation-delay:.26s}
+.category:nth-child(5){animation-delay:.33s}
+.cat-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.cat-pill{font-family:'Nunito',sans-serif;font-weight:800;font-size:13px;padding:5px 16px;border-radius:99px;border:2px solid transparent;}
+.cat-count{font-size:12px;color:var(--muted);font-weight:500;margin-left:auto;font-family:'Nunito',sans-serif;}
+.theme-mint  .cat-pill{background:#ccfbf1;color:#0f766e;border-color:#99f6e4;}
+.theme-blue  .cat-pill{background:#dbeafe;color:#1d4ed8;border-color:#bfdbfe;}
+.theme-coral .cat-pill{background:#ffe4e6;color:#be123c;border-color:#fecdd3;}
+.theme-purple .cat-pill{background:#ede9fe;color:#6d28d9;border-color:#ddd6fe;}
+.theme-yellow .cat-pill{background:#fef9c3;color:#92400e;border-color:#fde68a;}
 
 /* items */
-.item {
-  display: flex; align-items: center; gap: 14px;
-  padding: 14px 18px;
-  background: var(--card);
-  border: 2px solid var(--border);
-  border-radius: 16px; margin-bottom: 8px;
-  cursor: pointer;
-  transition: transform .15s ease, border-color .2s, background .2s, box-shadow .2s;
-  user-select: none;
-  -webkit-tap-highlight-color: transparent;
-}
-.item:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.07); }
-.item:active { transform: scale(0.98); }
+.item{display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--card);border:2px solid var(--border);border-radius:16px;margin-bottom:8px;cursor:pointer;transition:transform .15s ease,border-color .2s,background .2s,box-shadow .2s;user-select:none;-webkit-tap-highlight-color:transparent;}
+.item:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.07);}
+.item:active{transform:scale(.98);}
+.theme-mint  .item.checked{border-color:var(--mint);background:#f0fefa;box-shadow:0 4px 16px rgba(45,212,191,.15);}
+.theme-blue  .item.checked{border-color:var(--blue);background:#eff6ff;box-shadow:0 4px 16px rgba(96,165,250,.15);}
+.theme-coral .item.checked{border-color:var(--coral);background:#fff1f2;box-shadow:0 4px 16px rgba(251,113,133,.15);}
+.theme-purple .item.checked{border-color:var(--purple);background:#f5f3ff;box-shadow:0 4px 16px rgba(167,139,250,.15);}
+.theme-yellow .item.checked{border-color:var(--yellow);background:#fffbeb;box-shadow:0 4px 16px rgba(251,191,36,.15);}
+.cb-wrap{width:26px;height:26px;flex-shrink:0;border-radius:8px;border:2.5px solid #cbd5e1;display:flex;align-items:center;justify-content:center;transition:all .2s cubic-bezier(.4,0,.2,1);background:#fff;}
+.item.checked .cb-wrap{border-color:transparent;}
+.theme-mint  .item.checked .cb-wrap{background:var(--mint);}
+.theme-blue  .item.checked .cb-wrap{background:var(--blue);}
+.theme-coral .item.checked .cb-wrap{background:var(--coral);}
+.theme-purple .item.checked .cb-wrap{background:var(--purple);}
+.theme-yellow .item.checked .cb-wrap{background:var(--yellow);}
+.ck{width:14px;height:11px;opacity:0;transform:scale(.4) rotate(-10deg);transition:all .22s cubic-bezier(.4,0,.2,1);}
+.item.checked .ck{opacity:1;transform:scale(1) rotate(0);}
+.ck path{stroke:#fff;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;fill:none;}
+.item-emoji{font-size:20px;flex-shrink:0;}
+.item-text{flex:1;font-size:14.5px;color:#475569;line-height:1.6;transition:color .2s;}
+.item.checked .item-text{color:var(--text);font-weight:500;}
+.item-num{font-family:'Nunito',sans-serif;font-size:12px;font-weight:700;color:#cbd5e1;flex-shrink:0;}
+.item.checked .item-num{color:#94a3b8;}
+.item.unanswered{animation:shake .4s ease;border-color:var(--coral)!important;background:#fff1f2!important;}
 
-.theme-mint  .item.checked { border-color:var(--mint);   background:#f0fefa; box-shadow:0 4px 16px rgba(45,212,191,.15); }
-.theme-blue  .item.checked { border-color:var(--blue);   background:#eff6ff; box-shadow:0 4px 16px rgba(96,165,250,.15); }
-.theme-coral .item.checked { border-color:var(--coral);  background:#fff1f2; box-shadow:0 4px 16px rgba(251,113,133,.15); }
-.theme-purple .item.checked{ border-color:var(--purple); background:#f5f3ff; box-shadow:0 4px 16px rgba(167,139,250,.15); }
-.theme-yellow .item.checked{ border-color:var(--yellow); background:#fffbeb; box-shadow:0 4px 16px rgba(251,191,36,.15); }
-
-.cb-wrap {
-  width:26px; height:26px; flex-shrink:0;
-  border-radius:8px; border:2.5px solid #cbd5e1;
-  display:flex; align-items:center; justify-content:center;
-  transition: all .2s cubic-bezier(.4,0,.2,1);
-  background:#fff;
-}
-.item.checked .cb-wrap { border-color:transparent; }
-.theme-mint  .item.checked .cb-wrap { background:var(--mint);   }
-.theme-blue  .item.checked .cb-wrap { background:var(--blue);   }
-.theme-coral .item.checked .cb-wrap { background:var(--coral);  }
-.theme-purple .item.checked .cb-wrap{ background:var(--purple); }
-.theme-yellow .item.checked .cb-wrap{ background:var(--yellow); }
-
-.ck {
-  width:14px; height:11px;
-  opacity:0; transform:scale(0.4) rotate(-10deg);
-  transition: all .22s cubic-bezier(.4,0,.2,1);
-}
-.item.checked .ck { opacity:1; transform:scale(1) rotate(0); }
-.ck path { stroke:#fff; stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round; fill:none; }
-
-.item-emoji { font-size:20px; flex-shrink:0; }
-.item-text  { flex:1; font-size:14.5px; color:#475569; line-height:1.6; transition:color .2s; }
-.item.checked .item-text { color:var(--text); font-weight:500; }
-.item-num   { font-family:'Nunito',sans-serif; font-size:12px; font-weight:700; color:#cbd5e1; flex-shrink:0; }
-.item.checked .item-num { color:#94a3b8; }
-
-/* result panel */
-.result-panel {
-  position:fixed; bottom:0; left:0; right:0; z-index:40;
-  transform:translateY(110%);
-  transition:transform .45s cubic-bezier(.4,0,.2,1);
-  background:#fff; border-top:3px solid var(--mint);
-  padding:18px 24px 26px;
-  box-shadow:0 -8px 40px rgba(0,0,0,0.1);
-}
-.result-panel.visible { transform:translateY(0); }
-.result-inner { max-width:720px; margin:0 auto; }
-
-.result-grid {
-  display:grid;
-  grid-template-columns: auto 1fr auto;
-  align-items:center; gap:20px;
-}
-.score-circle {
-  width:72px; height:72px; border-radius:50%;
-  background:linear-gradient(135deg,var(--mint),var(--blue));
-  display:flex; flex-direction:column;
-  align-items:center; justify-content:center;
-  box-shadow:0 4px 20px rgba(45,212,191,.4);
-  flex-shrink:0;
-}
-.score-big {
-  font-family:'Nunito',sans-serif; font-weight:900;
-  font-size:30px; color:#fff; line-height:1;
-}
-.score-of { font-size:10px; color:rgba(255,255,255,.75); font-family:'Nunito',sans-serif; font-weight:700; }
-
-.band-title {
-  font-family:'Nunito',sans-serif; font-weight:800;
-  font-size:15px; color:var(--text); margin-bottom:4px;
-}
-.band-desc { font-size:12.5px; color:var(--muted); line-height:1.6; }
-
-.dots-track { display:flex; gap:3px; flex-wrap:wrap; margin-top:8px; max-width:160px; }
-.dot { width:9px; height:9px; border-radius:50%; background:#e2e8f0; transition:all .25s ease; flex-shrink:0; }
-.dot.on { background:var(--mint); box-shadow:0 0 0 2px rgba(45,212,191,.3); transform:scale(1.15); }
-
-.reset-btn {
-  background:#f1f5f9; border:2px solid #e2e8f0;
-  color:var(--muted);
-  font-family:'Nunito',sans-serif; font-weight:700; font-size:13px;
-  padding:8px 16px; border-radius:12px;
-  cursor:pointer; transition:all .2s; white-space:nowrap;
-}
-.reset-btn:hover { background:#ffe4e6; border-color:var(--coral); color:var(--coral); }
+/* submit */
+.submit-wrap{text-align:center;margin-top:40px;animation:slideUp .6s ease .5s both;}
+.submit-btn{background:linear-gradient(135deg,var(--mint),var(--blue));color:#fff;border:none;font-family:'Nunito',sans-serif;font-weight:900;font-size:18px;padding:16px 52px;border-radius:99px;cursor:pointer;box-shadow:0 6px 24px rgba(45,212,191,.4);transition:transform .15s,box-shadow .15s;letter-spacing:.04em;}
+.submit-btn:hover{transform:translateY(-3px);box-shadow:0 10px 32px rgba(45,212,191,.5);}
+.submit-btn:active{transform:scale(.97);}
+.submit-hint{font-size:13px;color:var(--muted);margin-top:10px;}
 
 /* reflection */
-.reflection {
-  margin-top:48px;
-  background:linear-gradient(135deg,#f0fdf4,#eff6ff);
-  border:2px dashed #bfdbfe; border-radius:20px;
-  padding:24px 28px; font-size:14px;
-  color:var(--muted); line-height:1.85;
-  animation:slideUp .6s ease .5s both;
-}
-.ref-tag {
-  display:inline-block; background:var(--blue); color:#fff;
-  font-family:'Nunito',sans-serif; font-weight:800;
-  font-size:11px; letter-spacing:.1em;
-  padding:3px 10px; border-radius:99px; margin-bottom:10px;
-}
+.reflection{margin-top:40px;background:linear-gradient(135deg,#f0fdf4,#eff6ff);border:2px dashed #bfdbfe;border-radius:20px;padding:24px 28px;font-size:14px;color:var(--muted);line-height:1.85;animation:slideUp .6s ease .5s both;}
+.ref-tag{display:inline-block;background:var(--blue);color:#fff;font-family:'Nunito',sans-serif;font-weight:800;font-size:11px;letter-spacing:.1em;padding:3px 10px;border-radius:99px;margin-bottom:10px;}
 
-/* keyframes */
-@keyframes bounceIn {
-  0%  { opacity:0; transform:scale(0.9) translateY(16px); }
-  60% { transform:scale(1.02) translateY(-4px); }
-  100%{ opacity:1; transform:scale(1) translateY(0); }
-}
-@keyframes slideUp {
-  from{ opacity:0; transform:translateY(24px); }
-  to  { opacity:1; transform:translateY(0); }
-}
-@keyframes popCheck {
-  0%  { transform:scale(1); }
-  35% { transform:scale(0.88); }
-  65% { transform:scale(1.1); }
-  100%{ transform:scale(1); }
-}
-.pop-anim { animation:popCheck .28s ease; }
+/* ══════════ RESULT PAGE ══════════ */
+.score-hero{text-align:center;padding:44px 24px 36px;background:linear-gradient(135deg,#ecfdf5,#eff6ff);border-radius:28px;border:2px solid #bfdbfe;margin-bottom:28px;animation:bounceIn .7s cubic-bezier(.36,.07,.19,.97) both;}
+.score-ring{width:110px;height:110px;border-radius:50%;margin:0 auto 16px;background:linear-gradient(135deg,var(--mint),var(--blue));display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 8px 32px rgba(45,212,191,.4);}
+.score-big{font-family:'Nunito',sans-serif;font-weight:900;font-size:44px;color:#fff;line-height:1;}
+.score-of{font-size:13px;color:rgba(255,255,255,.8);font-family:'Nunito',sans-serif;font-weight:700;}
+.band-name{font-family:'Nunito',sans-serif;font-weight:900;font-size:20px;color:var(--text);margin-bottom:8px;}
+.band-desc-r{font-size:14px;color:var(--muted);line-height:1.8;max-width:480px;margin:0 auto 20px;}
 
-@media(max-width:520px){
-  .result-grid{ grid-template-columns:auto 1fr; }
-  .reset-btn{ grid-column:1/-1; justify-self:start; }
-  h1{ font-size:30px; }
-  .container{ padding:32px 14px 200px; }
+/* reverse impact box */
+.impact-box{display:inline-flex;align-items:center;gap:8px;background:#fffbeb;border:2px solid #fde68a;border-radius:12px;padding:8px 16px;font-size:13px;color:#92400e;font-weight:500;}
+
+.rsec{margin-bottom:24px;animation:slideUp .5s ease both;}
+.rsec:nth-child(1){animation-delay:.1s}.rsec:nth-child(2){animation-delay:.18s}
+.rsec:nth-child(3){animation-delay:.26s}.rsec:nth-child(4){animation-delay:.34s}
+.sec-label{font-family:'Nunito',sans-serif;font-weight:800;font-size:12px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.dot-b{width:8px;height:8px;border-radius:50%;display:inline-block;}
+
+/* review grid */
+.rgrid{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+.ri{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:12px;border:1.5px solid var(--border);background:var(--card);font-size:13px;}
+.ri .re{font-size:15px;flex-shrink:0;}.ri .rt{flex:1;color:#475569;line-height:1.4;}.ri .rc{font-size:13px;flex-shrink:0;}
+.ri.yes{border-color:#99f6e4;background:#f0fefa;}.ri.yes .rt{color:var(--text);}
+.ri.no{border-color:var(--border);background:#f8fafc;opacity:.55;}
+.ri.rev-yes{border-color:#fde68a;background:#fffbeb;}
+.ri.rev-no{border-color:var(--border);background:#f8fafc;opacity:.55;}
+
+/* reflect */
+.reflect-card{background:#fff;border:2px solid var(--border);border-radius:20px;padding:20px 24px;}
+.rq{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--border);font-size:14px;color:var(--text);line-height:1.7;}
+.rq:last-child{border-bottom:none;padding-bottom:0;}
+.qn{font-family:'Nunito',sans-serif;font-weight:900;font-size:13px;min-width:26px;height:26px;border-radius:99px;background:linear-gradient(135deg,var(--mint),var(--blue));color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;}
+
+/* ══════════ TEACHER PAGE ══════════ */
+.teacher-wrap{max-width:760px;margin:0 auto;padding:40px 20px 80px;}
+.teacher-hero{background:linear-gradient(135deg,#1e293b,#0f172a);border-radius:24px;padding:32px 36px;margin-bottom:28px;color:#fff;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;}
+.teacher-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:22px;margin-bottom:4px;}
+.teacher-sub{font-size:13px;color:#94a3b8;line-height:1.6;}
+.student-count{font-family:'Nunito',sans-serif;font-weight:900;font-size:48px;color:var(--mint);line-height:1;}
+.count-label{font-size:12px;color:#64748b;font-family:'Nunito',sans-serif;}
+
+.chart-card{background:#fff;border:2px solid var(--border);border-radius:20px;padding:24px 28px;margin-bottom:20px;}
+.chart-title{font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;margin-bottom:16px;color:var(--text);}
+.freq-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.freq-label{font-size:12.5px;color:#475569;flex:1;line-height:1.4;}
+.freq-bar-wrap{width:140px;height:14px;background:#f1f5f9;border-radius:99px;overflow:hidden;flex-shrink:0;}
+.freq-bar{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--mint),var(--blue));transition:width .8s cubic-bezier(.4,0,.2,1);}
+.freq-pct{font-size:12px;font-weight:700;font-family:'Nunito',sans-serif;color:var(--muted);min-width:36px;text-align:right;}
+
+.t-nav{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
+.t-tab{font-family:'Nunito',sans-serif;font-weight:700;font-size:13px;padding:7px 18px;border-radius:99px;border:2px solid var(--border);background:#fff;color:var(--muted);cursor:pointer;transition:all .15s;}
+.t-tab.active{background:var(--text);color:#fff;border-color:var(--text);}
+.t-panel{display:none;}.t-panel.active{display:block;}
+
+/* enter password modal */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;display:flex;align-items:center;justify-content:center;display:none;}
+.modal-bg.open{display:flex;}
+.modal{background:#fff;border-radius:24px;padding:36px;max-width:380px;width:90%;text-align:center;animation:bounceIn .4s ease;}
+.modal h2{font-family:'Nunito',sans-serif;font-weight:900;font-size:20px;margin-bottom:8px;}
+.modal p{font-size:14px;color:var(--muted);margin-bottom:20px;line-height:1.6;}
+.modal input{width:100%;padding:12px 16px;border:2px solid var(--border);border-radius:12px;font-size:18px;font-family:'Nunito',sans-serif;font-weight:700;text-align:center;letter-spacing:.2em;outline:none;margin-bottom:12px;}
+.modal input:focus{border-color:var(--mint);}
+.modal-btn{width:100%;padding:12px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--mint),var(--blue));color:#fff;font-family:'Nunito',sans-serif;font-weight:900;font-size:16px;cursor:pointer;}
+.modal-btn:active{opacity:.85;}
+.modal-err{font-size:13px;color:var(--coral);margin-top:8px;display:none;}
+
+/* shared btns */
+.page-btn{font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;padding:10px 24px;border-radius:99px;border:2px solid var(--border);background:#fff;color:var(--muted);cursor:pointer;transition:all .2s;}
+.page-btn:hover{border-color:var(--coral);color:var(--coral);background:#fff1f2;}
+.page-btn.primary{background:linear-gradient(135deg,var(--mint),var(--blue));color:#fff;border-color:transparent;box-shadow:0 4px 16px rgba(45,212,191,.35);}
+.page-btn.primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(45,212,191,.45);}
+
+/* animations */
+@keyframes bounceIn{0%{opacity:0;transform:scale(.9) translateY(16px);}60%{transform:scale(1.02) translateY(-4px);}100%{opacity:1;transform:scale(1) translateY(0);}}
+@keyframes slideUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+@keyframes popCheck{0%{transform:scale(1);}35%{transform:scale(.88);}65%{transform:scale(1.1);}100%{transform:scale(1);}}
+@keyframes shake{0%,100%{transform:translateX(0);}20%{transform:translateX(-6px);}40%{transform:translateX(6px);}60%{transform:translateX(-4px);}80%{transform:translateX(4px);}}
+.pop-anim{animation:popCheck .28s ease;}
+
+@media(max-width:560px){
+  .rgrid{grid-template-columns:1fr;}
+  .stat-grid{grid-template-columns:1fr 1fr;}
+  h1{font-size:28px;}
+  .wrap{padding:32px 14px 140px;}
+  .teacher-hero{flex-direction:column;text-align:center;}
 }
 </style>
 </head>
 <body>
 
-<div class="topbar">
+<!-- TOPBAR (quiz only) -->
+<div class="topbar" id="topbar">
   <div class="bar-track"><div class="bar-fill" id="barFill"></div></div>
-  <div class="bar-text" id="barText">0 / 20 題</div>
-  <div class="score-badge" id="scoreBadge">✨ 0 分</div>
+  <div class="bar-text" id="barText">已回答 0 / 25 題</div>
+  <div class="ab" id="abBadge">📝 0%</div>
 </div>
 
-<div class="container">
+<!-- ════════ PAGE: QUIZ ════════ -->
+<div id="pageQuiz" class="page active">
+<div class="wrap">
   <div class="hero">
     <div class="hero-tag">🎓 情意教育工具</div>
     <h1>台灣<span class="hl">特權</span>量表</h1>
-    <p class="hero-sub">
-      在你 18 歲以前，有過哪些經歷？<br>
-      點選符合的項目，誠實作答就好 — 沒有對錯，只有看見 👀
-    </p>
+    <p class="hero-sub">在你 18 歲以前，有過哪些經歷？<br>全部題目作答後才能看見你的結果 👀</p>
+  </div>
+
+  <div class="notice">
+    <div class="notice-icon">💡</div>
+    <div>勾選你<strong>曾經有過</strong>的經歷，每一題都要回答才能送出。</div>
   </div>
 
   <div id="quizBody"></div>
 
+  <div class="submit-wrap">
+    <button class="submit-btn" onclick="trySubmit()">看我的結果 🎯</button>
+    <div class="submit-hint" id="submitHint">還有 <strong id="remainCount">25</strong> 題未作答</div>
+  </div>
+
   <div class="reflection">
-    <div class="ref-tag">💡 給自己的提醒</div>
-    <p>分數不代表你的努力多寡，也不代表你的價值高低。<br>
-    它描述的是你出發時，有多少資源被擺在你身旁。<br>
-    <strong>看見自己的起點，是理解別人處境的第一步。</strong></p>
+    <div class="ref-tag">💡 作答提醒</div>
+    <p>沒有對錯，只有看見。誠實作答，才能真正認識自己的起點。</p>
   </div>
 </div>
+</div>
 
-<div class="result-panel" id="resultPanel">
-  <div class="result-inner">
-    <div class="result-grid">
-      <div class="score-circle">
-        <div class="score-big" id="scoreNum">0</div>
-        <div class="score-of">/ 20</div>
-      </div>
-      <div>
-        <div class="band-title" id="bandTitle">—</div>
-        <div class="band-desc" id="bandDesc">開始點選，看看你的起點在哪裡！</div>
-        <div class="dots-track" id="dotsTrack"></div>
-      </div>
-      <button class="reset-btn" onclick="resetAll()">🔄 重新作答</button>
+<!-- ════════ PAGE: RESULT ════════ -->
+<div id="pageResult" class="page">
+<div class="wrap-result">
+
+  <div class="score-hero">
+    <div class="score-ring">
+      <div class="score-big" id="rScore">0</div>
+      <div class="score-of">/ 20 分</div>
     </div>
+    <div class="band-name" id="rBandName">—</div>
+    <p class="band-desc-r" id="rBandDesc"></p>
+    <div class="impact-box" id="rReverseBox"></div>
+  </div>
+
+  <div class="rsec">
+    <div class="sec-label"><span class="dot-b" style="background:var(--mint)"></span>你勾選的正向題</div>
+    <div class="rgrid" id="posGrid"></div>
+  </div>
+
+  <div class="rsec">
+    <div class="sec-label"><span class="dot-b" style="background:var(--yellow)"></span>這些你也有過嗎？</div>
+    <div class="rgrid" id="revGrid"></div>
+  </div>
+
+  <div class="rsec">
+    <div class="sec-label"><span class="dot-b" style="background:var(--purple)"></span>想一想 🤔</div>
+    <div class="reflect-card" id="reflectCard"></div>
+  </div>
+
+  <div style="text-align:center;margin-top:32px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+    <button class="page-btn" onclick="resetAll()">🔄 重新作答</button>
+    <button class="page-btn primary" onclick="showTeacherModal()">👩‍🏫 老師檢視統計</button>
+  </div>
+
+</div>
+</div>
+
+<!-- ════════ PAGE: TEACHER ════════ -->
+<div id="pageTeacher" class="page">
+<div class="teacher-wrap">
+
+  <div class="teacher-hero">
+    <div>
+      <div class="teacher-title">📊 老師專用統計儀表板</div>
+      <div class="teacher-sub">以下為本次在此瀏覽器中完成作答的匿名統計。<br>不顯示任何個人資料或分數。</div>
+    </div>
+    <div style="text-align:center;">
+      <div class="student-count" id="tCount">0</div>
+      <div class="count-label">位學生已完成</div>
+    </div>
+  </div>
+
+  <div class="t-nav">
+    <button class="t-tab active" onclick="switchTab(this,'tabItems')">📋 各題勾選率</button>
+    <button class="t-tab" onclick="switchTab(this,'tabReverse')">缺乏類題目</button>
+  </div>
+
+  <!-- Tab: Items -->
+  <div id="tabItems" class="t-panel active">
+    <div class="chart-card">
+      <div class="chart-title">正向題勾選率（全班）</div>
+      <div id="tItemChart"></div>
+    </div>
+  </div>
+
+  <!-- Tab: Reverse -->
+  <div id="tabReverse" class="t-panel">
+    <div class="chart-card">
+      <div class="chart-title">這些不利經歷的勾選率（全班）</div>
+      <div id="tRevChart"></div>
+    </div>
+  </div>
+
+  <div style="text-align:center;margin-top:32px;">
+    <button class="page-btn" onclick="goPage('pageResult')">← 返回結果頁</button>
+  </div>
+
+</div>
+</div>
+
+<!-- PASSWORD MODAL -->
+<div class="modal-bg" id="modalBg">
+  <div class="modal">
+    <div style="font-size:36px;margin-bottom:12px;">🔒</div>
+    <h2>老師驗證</h2>
+    <p>請輸入老師密碼以查看全班統計資料。<br>預設密碼：<strong>teacher</strong></p>
+    <input type="password" id="pwInput" placeholder="輸入密碼" onkeydown="if(event.key==='Enter')checkPw()">
+    <button class="modal-btn" onclick="checkPw()">確認進入</button>
+    <div class="modal-err" id="pwErr">密碼錯誤，請再試一次</div>
+    <div style="margin-top:12px;"><button class="page-btn" style="font-size:13px;" onclick="closeModal()">取消</button></div>
   </div>
 </div>
 
 <script>
+/* ══════════════════════════════
+   DATA
+══════════════════════════════ */
+const TEACHER_PW = 'teacher';
+
 const cats = [
-  { theme:'theme-mint',   icon:'🏠', name:'居住與空間', items:[
-    {id:1,  e:'🛏️', t:'有自己的房間'},
-    {id:2,  e:'💻', t:'有自己的電腦'},
+  {theme:'theme-mint',  icon:'🏠', name:'居住與空間', items:[
+    {id:1,   e:'🛏️', t:'有自己的房間',          rev:false},
+    {id:2,   e:'💻', t:'有自己的電腦',           rev:false},
+    {id:'R1',e:'📦', t:'曾與兄弟姊妹或他人共用一張床或同一個房間', rev:true, rn:'缺乏私人空間'},
   ]},
-  { theme:'theme-blue',   icon:'📚', name:'教育資源', items:[
-    {id:3,  e:'👨‍🏫', t:'接受過一對一家教'},
-    {id:4,  e:'🏆', t:'參加過付費資優／競賽／外語檢定培訓班'},
-    {id:5,  e:'🎵', t:'付費學過樂器、舞蹈或美術任一項一年以上'},
+  {theme:'theme-blue',  icon:'📚', name:'教育資源', items:[
+    {id:3,   e:'👨‍🏫', t:'接受過一對一家教',       rev:false},
+    {id:4,   e:'🏆', t:'參加過付費資優／競賽／外語檢定培訓班', rev:false},
+    {id:5,   e:'🎵', t:'付費學過樂器、舞蹈或美術任一項一年以上', rev:false},
+    {id:'R2',e:'📚', t:'曾因家裡沒錢，無法參加任何學校以外的才藝或補習', rev:true, rn:'教育資源匱乏'},
+    {id:'R3',e:'🔦', t:'曾在沒有安靜書桌或足夠光線的環境下寫功課', rev:true, rn:'學習環境不足'},
   ]},
-  { theme:'theme-coral',  icon:'🎾', name:'休閒與體驗', items:[
-    {id:6,  e:'⛷️', t:'付費學過網球、高爾夫、滑雪或潛水任一項'},
-    {id:7,  e:'😁', t:'接受過牙齒矯正或心理諮商任一（或家裡負擔得起）'},
-    {id:8,  e:'🎮', t:'家中有當時熱門的遊戲主機（任天堂、PS 系列、Xbox 等）'},
+  {theme:'theme-coral', icon:'🎾', name:'休閒與體驗', items:[
+    {id:6,   e:'⛷️', t:'付費學過網球、高爾夫、滑雪或潛水任一項', rev:false},
+    {id:7,   e:'😁', t:'接受過牙齒矯正或心理諮商任一（或家裡負擔得起）', rev:false},
+    {id:8,   e:'🎮', t:'家中有當時熱門的遊戲主機', rev:false},
+    {id:'R4',e:'🍱', t:'曾因經濟因素，在學校無法吃和同學一樣的午餐或零食', rev:true, rn:'飲食資源不均'},
   ]},
-  { theme:'theme-purple', icon:'🏡', name:'家庭條件', items:[
-    {id:9,  e:'🧹', t:'家中長期雇用清潔人員或家務支援'},
-    {id:10, e:'🎓', t:'家長都有大學畢業以上學歷'},
-    {id:11, e:'🚗', t:'家裡有兩輛車以上'},
-    {id:12, e:'🏙️', t:'家裡在台北市有住宅'},
-    {id:13, e:'📈', t:'家長有為你配置信託、基金、股票或保單任一'},
+  {theme:'theme-purple',icon:'🏡', name:'家庭條件', items:[
+    {id:9,   e:'🧹', t:'家中長期雇用清潔人員或家務支援', rev:false},
+    {id:10,  e:'🎓', t:'家長都有大學畢業以上學歷',   rev:false},
+    {id:11,  e:'🚗', t:'家裡有兩輛車以上',          rev:false},
+    {id:12,  e:'🏙️', t:'家裡在台北市有住宅',        rev:false},
+    {id:13,  e:'📈', t:'家長有為你配置信託、基金、股票或保單任一', rev:false},
+    {id:'R5',e:'💼', t:'曾因家裡需要幫忙，必須打工或做大量家事而影響讀書', rev:true, rn:'家庭責任過重'},
   ]},
-  { theme:'theme-yellow', icon:'✈️', name:'國際視野', items:[
-    {id:14, e:'🌏', t:'出國旅遊過'},
-    {id:15, e:'🗽', t:'去過美國、加拿大或歐洲任一'},
-    {id:16, e:'🛫', t:'搭過商務艙以上艙等'},
-    {id:17, e:'🏫', t:'家裡有幫你規劃出國讀書'},
-    {id:18, e:'⛺', t:'參加過海外夏令營或冬令營'},
-    {id:19, e:'🌐', t:'讀過國際學校或雙語私校'},
-    {id:20, e:'🛂', t:'擁有雙重國籍、他國永久居留或長期居留權'},
+  {theme:'theme-yellow',icon:'✈️', name:'國際視野', items:[
+    {id:14,  e:'🌏', t:'出國旅遊過',              rev:false},
+    {id:15,  e:'🗽', t:'去過美國、加拿大或歐洲任一', rev:false},
+    {id:16,  e:'🛫', t:'搭過商務艙以上艙等',        rev:false},
+    {id:17,  e:'🏫', t:'家裡有幫你規劃出國讀書',    rev:false},
+    {id:18,  e:'⛺', t:'參加過海外夏令營或冬令營',   rev:false},
+    {id:19,  e:'🌐', t:'讀過國際學校或雙語私校',     rev:false},
+    {id:20,  e:'🛂', t:'擁有雙重國籍、他國永久居留或長期居留權', rev:false},
+    {id:'R6',e:'🗺️', t:'從來沒有離開過自己生長的縣市去旅遊或參觀', rev:true, rn:'視野受限'},
   ]},
 ];
 
 const bands = [
-  {min:0,  max:4,  title:'資源有限的起點 🌱', desc:'你在相對匱乏的環境中成長，每一步的前進都需要多付出許多力氣。'},
-  {min:5,  max:9,  title:'中等資源的起點 🌿', desc:'你擁有一些基本資源，但仍有許多機會是你靠自己爭取的。'},
-  {min:10, max:14, title:'資源豐富的起點 🌳', desc:'你成長在相對充裕的環境，許多理所當然的條件並非人人都有。'},
-  {min:15, max:20, title:'高度優勢的起點 🚀', desc:'你擁有許多結構性優勢，這些資源為你打開很多門，值得思考如何回饋。'},
+  {min:0,  max:4,  name:'資源有限的起點 🌱', desc:'你在相對匱乏的環境中成長，每一步的前進都需要多付出許多力氣。能走到現在，你已經非常了不起。'},
+  {min:5,  max:9,  name:'中等資源的起點 🌿', desc:'你擁有一些基本資源，但仍有許多機會是你靠自己努力爭取的。你的位置剛好能看見兩種不同的世界。'},
+  {min:10, max:14, name:'資源豐富的起點 🌳', desc:'你成長在相對充裕的環境，許多你視為理所當然的條件並非人人都有。這份認識，是很重要的起步。'},
+  {min:15, max:20, name:'高度優勢的起點 🚀', desc:'你擁有許多結構性優勢，這些資源為你打開了很多門。理解這件事，不是為了愧疚，而是為了選擇如何善用它。'},
 ];
 
-const checked = new Set();
-const TOTAL = 20;
+const reflectQs = [
+  '量表中哪一題讓你最意外？是你原本以為「人人都有」，還是「只有少數人才有」的？',
+  '反向題有沒有勾選到？如果有，那個經歷對你來說感覺是什麼？',
+  '如果你的同學分數和你差很多（無論高或低），你覺得這代表什麼？不代表什麼？',
+  '你現在擁有的哪一項資源，你最想讓更多人也能擁有？你能怎麼做？',
+];
 
-function build() {
+const allItems = cats.flatMap(c => c.items);
+const posItems = allItems.filter(i => !i.rev);
+const revItems = allItems.filter(i => i.rev);
+const TOTAL = allItems.length;
+
+/* ══════════════════════════════
+   STATE
+══════════════════════════════ */
+const answered = {}; // id -> true (checked) | false (explicit no, via second click)
+// submissions store: array of {score, posChecked:Set, revChecked:Set}
+const submissions = [];
+
+/* ══════════════════════════════
+   BUILD QUIZ
+══════════════════════════════ */
+function buildQuiz() {
   const body = document.getElementById('quizBody');
   cats.forEach((cat, ci) => {
     const sec = document.createElement('div');
@@ -407,73 +395,215 @@ function build() {
 
     const hdr = document.createElement('div');
     hdr.className = 'cat-header';
-    hdr.innerHTML = `<div class="cat-pill">${cat.icon} ${cat.name}</div><div class="cat-count" id="cc${ci}">${cat.items.length} 項</div>`;
+    hdr.innerHTML = `<div class="cat-pill">${cat.icon} ${cat.name}</div><div class="cat-count" id="cc${ci}">0 / ${cat.items.length} 已回答</div>`;
     sec.appendChild(hdr);
 
     cat.items.forEach(it => {
       const div = document.createElement('div');
       div.className = 'item';
-      div.id = 'i' + it.id;
+      div.id = 'item-' + it.id;
       div.innerHTML = `
         <div class="cb-wrap"><svg class="ck" viewBox="0 0 14 11"><path d="M1.5 5.5L5.5 9.5L12.5 1.5"/></svg></div>
         <div class="item-emoji">${it.e}</div>
         <div class="item-text">${it.t}</div>
-        <div class="item-num">${it.id}</div>`;
-      div.addEventListener('click', () => toggle(it.id, div, cat.items, ci));
+        <div class="item-num">${it.rev ? '' : it.id}</div>`;
+      div.addEventListener('click', () => toggleItem(it.id, div, cat.items, ci));
       sec.appendChild(div);
     });
     body.appendChild(sec);
   });
-
-  const track = document.getElementById('dotsTrack');
-  for (let i = 1; i <= TOTAL; i++) {
-    const d = document.createElement('div');
-    d.className = 'dot'; d.id = 'd' + i;
-    track.appendChild(d);
-  }
 }
 
-function toggle(id, el, items, ci) {
-  if (checked.has(id)) {
-    checked.delete(id);
+/* ══════════════════════════════
+   TOGGLE — click cycles: unchecked → checked → unchecked
+   First interaction marks item as "answered" regardless of checked state.
+   We store answered[id] = true (checked) or answered[id] = false (unchecked-but-touched)
+══════════════════════════════ */
+function toggleItem(id, el, items, ci) {
+  el.classList.remove('unanswered');
+  const wasChecked = el.classList.contains('checked');
+  if (wasChecked) {
     el.classList.remove('checked');
-    document.getElementById('d'+id).classList.remove('on');
+    answered[id] = false; // touched but unchecked = "No"
   } else {
-    checked.add(id);
     el.classList.add('checked');
-    document.getElementById('d'+id).classList.add('on');
-    el.classList.remove('pop-anim'); void el.offsetWidth;
-    el.classList.add('pop-anim');
+    answered[id] = true;
+    el.classList.remove('pop-anim'); void el.offsetWidth; el.classList.add('pop-anim');
   }
-  const n = items.filter(it => checked.has(it.id)).length;
+  const done = items.filter(it => answered[it.id] !== undefined).length;
   const cc = document.getElementById('cc'+ci);
-  if(cc) cc.textContent = n > 0 ? `✅ ${n} / ${items.length}` : `${items.length} 項`;
-  updateUI();
+  if(cc) cc.textContent = done + ' / ' + items.length + ' 已回答';
+  updateProgress();
 }
 
-function updateUI() {
-  const s = checked.size;
-  document.getElementById('barFill').style.width = (s/TOTAL*100)+'%';
-  document.getElementById('barText').textContent = s+' / '+TOTAL+' 題';
-  document.getElementById('scoreBadge').textContent = '✨ '+s+' 分';
-  document.getElementById('resultPanel').classList.toggle('visible', s > 0);
-  const sn = document.getElementById('scoreNum');
-  sn.textContent = s;
-  sn.classList.remove('pop-anim'); void sn.offsetWidth; sn.classList.add('pop-anim');
-  const b = bands.find(b => s>=b.min && s<=b.max);
-  if(b){ document.getElementById('bandTitle').textContent=b.title; document.getElementById('bandDesc').textContent=b.desc; }
+function updateProgress() {
+  const done = Object.keys(answered).length;
+  const pct = Math.round(done / TOTAL * 100);
+  document.getElementById('barFill').style.width = pct + '%';
+  document.getElementById('barText').textContent = '已回答 ' + done + ' / ' + TOTAL + ' 題';
+  document.getElementById('abBadge').textContent = '📝 ' + pct + '%';
+  const remain = TOTAL - done;
+  document.getElementById('remainCount').textContent = remain;
+  document.getElementById('submitHint').textContent = remain > 0
+    ? `還有 ${remain} 題未作答（點兩下 = 不符合）`
+    : '✅ 全部作答完畢，可以送出了！';
 }
 
+/* ══════════════════════════════
+   SUBMIT
+══════════════════════════════ */
+function trySubmit() {
+  const unansw = allItems.filter(it => answered[it.id] === undefined).map(it => it.id);
+  if (unansw.length > 0) {
+    unansw.forEach(id => {
+      const el = document.getElementById('item-'+id);
+      if(!el) return;
+      el.classList.remove('unanswered'); void el.offsetWidth; el.classList.add('unanswered');
+    });
+    document.getElementById('item-'+unansw[0]).scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+
+  // calculate
+  const score = posItems.filter(it => answered[it.id] === true).length;
+  const revChecked = new Set(revItems.filter(it => answered[it.id] === true).map(it => it.id));
+  const posChecked = new Set(posItems.filter(it => answered[it.id] === true).map(it => it.id));
+
+  // save submission
+  submissions.push({ score, posChecked, revChecked });
+
+  renderResult(score, posChecked, revChecked);
+}
+
+/* ══════════════════════════════
+   RENDER RESULT
+══════════════════════════════ */
+function renderResult(score, posChecked, revChecked) {
+  const band = bands.find(b => score >= b.min && score <= b.max);
+  document.getElementById('rScore').textContent = score;
+  document.getElementById('rBandName').textContent = band.name;
+  document.getElementById('rBandDesc').textContent = band.desc;
+
+  const revCount = revChecked.size;
+  const rbox = document.getElementById('rReverseBox');
+  rbox.textContent = revCount > 0
+    ? `⚡ 你勾選了 ${revCount} 道反向題，代表曾有 ${revCount} 種資源不足的經歷`
+    : `✨ 反向題全部沒勾選——你沒有遭遇過這些資源缺乏的困境`;
+
+  // positive grid
+  const pg = document.getElementById('posGrid'); pg.innerHTML = '';
+  posItems.forEach(it => {
+    const yes = posChecked.has(it.id);
+    const d = document.createElement('div');
+    d.className = 'ri ' + (yes ? 'yes' : 'no');
+    d.innerHTML = `<div class="re">${it.e}</div><div class="rt">${it.t}</div><div class="rc">${yes?'✅':'○'}</div>`;
+    pg.appendChild(d);
+  });
+
+  // reverse grid
+  const rg = document.getElementById('revGrid'); rg.innerHTML = '';
+  revItems.forEach(it => {
+    const yes = revChecked.has(it.id);
+    const d = document.createElement('div');
+    d.className = 'ri ' + (yes ? 'rev-yes' : 'rev-no');
+    d.innerHTML = `<div class="re">${it.e}</div><div class="rt">${it.t}</div><div class="rc">${yes?'✅':'○'}</div>`;
+    rg.appendChild(d);
+  });
+
+  // reflect
+  const rc = document.getElementById('reflectCard'); rc.innerHTML = '';
+  reflectQs.forEach((q,i) => {
+    const d = document.createElement('div'); d.className = 'rq';
+    d.innerHTML = `<div class="qn">${i+1}</div><div>${q}</div>`;
+    rc.appendChild(d);
+  });
+
+  goPage('pageResult');
+}
+
+/* ══════════════════════════════
+   TEACHER DASHBOARD
+══════════════════════════════ */
+function showTeacherModal() {
+  document.getElementById('pwInput').value = '';
+  document.getElementById('pwErr').style.display = 'none';
+  document.getElementById('modalBg').classList.add('open');
+  setTimeout(()=>document.getElementById('pwInput').focus(), 100);
+}
+function closeModal() { document.getElementById('modalBg').classList.remove('open'); }
+function checkPw() {
+  if(document.getElementById('pwInput').value === TEACHER_PW) {
+    closeModal();
+    renderTeacher();
+    goPage('pageTeacher');
+  } else {
+    document.getElementById('pwErr').style.display = 'block';
+    document.getElementById('pwInput').value = '';
+  }
+}
+
+function renderTeacher() {
+  const n = submissions.length;
+  document.getElementById('tCount').textContent = n;
+  if(n === 0) return;
+
+  // item frequency
+  const ic = document.getElementById('tItemChart'); ic.innerHTML = '';
+  posItems.forEach(it => {
+    const cnt = submissions.filter(s => s.posChecked.has(it.id)).length;
+    const pct = n > 0 ? Math.round(cnt/n*100) : 0;
+    const row = document.createElement('div'); row.className = 'freq-row';
+    row.innerHTML = `<div class="freq-label">${it.e} ${it.t}</div><div class="freq-bar-wrap"><div class="freq-bar" style="width:${pct}%"></div></div><div class="freq-pct">${pct}%</div>`;
+    ic.appendChild(row);
+  });
+
+  // reverse frequency
+  const rc2 = document.getElementById('tRevChart'); rc2.innerHTML = '';
+  revItems.forEach(it => {
+    const cnt = submissions.filter(s => s.revChecked.has(it.id)).length;
+    const pct = n > 0 ? Math.round(cnt/n*100) : 0;
+    const row = document.createElement('div'); row.className = 'freq-row';
+    row.innerHTML = `<div class="freq-label">${it.e} ${it.t}</div><div class="freq-bar-wrap"><div class="freq-bar" style="width:${pct}%;background:linear-gradient(90deg,var(--yellow),var(--coral))"></div></div><div class="freq-pct">${pct}%</div>`;
+    rc2.appendChild(row);
+  });
+}
+
+function switchTab(btn, panelId) {
+  document.querySelectorAll('.t-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.t-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(panelId).classList.add('active');
+}
+
+/* ══════════════════════════════
+   NAVIGATION
+══════════════════════════════ */
+function goPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.getElementById('topbar').style.display = id === 'pageQuiz' ? 'flex' : 'none';
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+/* ══════════════════════════════
+   RESET
+══════════════════════════════ */
 function resetAll() {
-  checked.clear();
-  document.querySelectorAll('.item').forEach(el => el.classList.remove('checked','pop-anim'));
-  document.querySelectorAll('.dot').forEach(d => d.classList.remove('on'));
-  cats.forEach((cat,ci)=>{ const cc=document.getElementById('cc'+ci); if(cc) cc.textContent=cat.items.length+' 項'; });
-  document.getElementById('resultPanel').classList.remove('visible');
-  updateUI();
+  Object.keys(answered).forEach(k => delete answered[k]);
+  document.querySelectorAll('.item').forEach(el => el.classList.remove('checked','pop-anim','unanswered'));
+  cats.forEach((cat,ci) => {
+    const cc = document.getElementById('cc'+ci);
+    if(cc) cc.textContent = '0 / '+cat.items.length+' 已回答';
+  });
+  updateProgress();
+  goPage('pageQuiz');
 }
 
-build();
+/* ══════════════════════════════
+   INIT
+══════════════════════════════ */
+buildQuiz();
+updateProgress();
 </script>
 </body>
 </html>
