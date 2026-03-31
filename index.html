@@ -128,38 +128,14 @@ h1{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(30px,6vw,50px
 .rq:last-child{border-bottom:none;padding-bottom:0;}
 .qn{font-family:'Nunito',sans-serif;font-weight:900;font-size:13px;min-width:26px;height:26px;border-radius:99px;background:linear-gradient(135deg,var(--mint),var(--blue));color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;}
 
-/* ══════════ TEACHER PAGE ══════════ */
-.teacher-wrap{max-width:760px;margin:0 auto;padding:40px 20px 80px;}
-.teacher-hero{background:linear-gradient(135deg,#1e293b,#0f172a);border-radius:24px;padding:32px 36px;margin-bottom:28px;color:#fff;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;}
-.teacher-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:22px;margin-bottom:4px;}
-.teacher-sub{font-size:13px;color:#94a3b8;line-height:1.6;}
-.student-count{font-family:'Nunito',sans-serif;font-weight:900;font-size:48px;color:var(--mint);line-height:1;}
-.count-label{font-size:12px;color:#64748b;font-family:'Nunito',sans-serif;}
-
-.chart-card{background:#fff;border:2px solid var(--border);border-radius:20px;padding:24px 28px;margin-bottom:20px;}
-.chart-title{font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;margin-bottom:16px;color:var(--text);}
-.freq-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
-.freq-label{font-size:12.5px;color:#475569;flex:1;line-height:1.4;}
-.freq-bar-wrap{width:140px;height:14px;background:#f1f5f9;border-radius:99px;overflow:hidden;flex-shrink:0;}
-.freq-bar{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--mint),var(--blue));transition:width .8s cubic-bezier(.4,0,.2,1);}
-.freq-pct{font-size:12px;font-weight:700;font-family:'Nunito',sans-serif;color:var(--muted);min-width:36px;text-align:right;}
-
-.t-nav{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
-.t-tab{font-family:'Nunito',sans-serif;font-weight:700;font-size:13px;padding:7px 18px;border-radius:99px;border:2px solid var(--border);background:#fff;color:var(--muted);cursor:pointer;transition:all .15s;}
-.t-tab.active{background:var(--text);color:#fff;border-color:var(--text);}
-.t-panel{display:none;}.t-panel.active{display:block;}
-
-/* enter password modal */
+/* confirm modal */
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;display:flex;align-items:center;justify-content:center;display:none;}
 .modal-bg.open{display:flex;}
 .modal{background:#fff;border-radius:24px;padding:36px;max-width:380px;width:90%;text-align:center;animation:bounceIn .4s ease;}
 .modal h2{font-family:'Nunito',sans-serif;font-weight:900;font-size:20px;margin-bottom:8px;}
 .modal p{font-size:14px;color:var(--muted);margin-bottom:20px;line-height:1.6;}
-.modal input{width:100%;padding:12px 16px;border:2px solid var(--border);border-radius:12px;font-size:18px;font-family:'Nunito',sans-serif;font-weight:700;text-align:center;letter-spacing:.2em;outline:none;margin-bottom:12px;}
-.modal input:focus{border-color:var(--mint);}
 .modal-btn{width:100%;padding:12px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--mint),var(--blue));color:#fff;font-family:'Nunito',sans-serif;font-weight:900;font-size:16px;cursor:pointer;}
 .modal-btn:active{opacity:.85;}
-.modal-err{font-size:13px;color:var(--coral);margin-top:8px;display:none;}
 
 /* shared btns */
 .page-btn{font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;padding:10px 24px;border-radius:99px;border:2px solid var(--border);background:#fff;color:var(--muted);cursor:pointer;transition:all .2s;}
@@ -176,10 +152,8 @@ h1{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(30px,6vw,50px
 
 @media(max-width:560px){
   .rgrid{grid-template-columns:1fr;}
-  .stat-grid{grid-template-columns:1fr 1fr;}
   h1{font-size:28px;}
   .wrap{padding:32px 14px 140px;}
-  .teacher-hero{flex-direction:column;text-align:center;}
 }
 </style>
 </head>
@@ -249,68 +223,11 @@ h1{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(30px,6vw,50px
     <div class="reflect-card" id="reflectCard"></div>
   </div>
 
-  <div style="text-align:center;margin-top:32px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
-    <button class="page-btn" onclick="resetAll()">🔄 重新作答</button>
-    <button class="page-btn primary" onclick="showTeacherModal()">👩‍🏫 老師檢視統計</button>
-  </div>
-
-</div>
-</div>
-
-<!-- ════════ PAGE: TEACHER ════════ -->
-<div id="pageTeacher" class="page">
-<div class="teacher-wrap">
-
-  <div class="teacher-hero">
-    <div>
-      <div class="teacher-title">📊 老師專用統計儀表板</div>
-      <div class="teacher-sub">以下為本次在此瀏覽器中完成作答的匿名統計。<br>不顯示任何個人資料或分數。</div>
-    </div>
-    <div style="text-align:center;">
-      <div class="student-count" id="tCount">0</div>
-      <div class="count-label">位學生已完成</div>
-    </div>
-  </div>
-
-  <div class="t-nav">
-    <button class="t-tab active" onclick="switchTab(this,'tabItems')">📋 各題勾選率</button>
-    <button class="t-tab" onclick="switchTab(this,'tabReverse')">缺乏類題目</button>
-  </div>
-
-  <!-- Tab: Items -->
-  <div id="tabItems" class="t-panel active">
-    <div class="chart-card">
-      <div class="chart-title">正向題勾選率（全班）</div>
-      <div id="tItemChart"></div>
-    </div>
-  </div>
-
-  <!-- Tab: Reverse -->
-  <div id="tabReverse" class="t-panel">
-    <div class="chart-card">
-      <div class="chart-title">這些不利經歷的勾選率（全班）</div>
-      <div id="tRevChart"></div>
-    </div>
-  </div>
-
   <div style="text-align:center;margin-top:32px;">
-    <button class="page-btn" onclick="goPage('pageResult')">← 返回結果頁</button>
+    <button class="page-btn" onclick="resetAll()">🔄 重新作答</button>
   </div>
 
 </div>
-</div>
-
-<!-- PASSWORD MODAL -->
-<div class="modal-bg" id="modalBg">
-  <div class="modal">
-    <div style="font-size:36px;margin-bottom:12px;">🔒</div>
-    <h2>老師驗證</h2>
-    <p>請輸入老師密碼以查看全班統計資料。<br>預設密碼：<strong>teacher</strong></p>
-    <input type="password" id="pwInput" placeholder="輸入密碼" onkeydown="if(event.key==='Enter')checkPw()">
-    <button class="modal-btn" onclick="checkPw()">確認進入</button>
-    <div class="modal-err" id="pwErr">密碼錯誤，請再試一次</div>
-    <div style="margin-top:12px;"><button class="page-btn" style="font-size:13px;" onclick="closeModal()">取消</button></div>
-  </div>
 </div>
 
 <!-- CONFIRM SUBMIT MODAL -->
@@ -328,12 +245,10 @@ h1{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(30px,6vw,50px
 /* ══════════════════════════════
    DATA
 ══════════════════════════════ */
-const TEACHER_PW = 'teacher';
-
 const cats = [
   {theme:'theme-mint',  icon:'🏠', name:'居住與空間', items:[
     {id:1,   e:'🛏️', t:'有自己的房間',          rev:false},
-    {id:2,   e:'💻', t:'有自己的電腦(或可以自由使用)',           rev:false},
+    {id:2,   e:'💻', t:'有自己的電腦',           rev:false},
     {id:'R1',e:'📦', t:'曾與兄弟姊妹或他人共用一張床或同一個房間', rev:true, rn:'缺乏私人空間'},
   ]},
   {theme:'theme-blue',  icon:'📚', name:'教育資源', items:[
@@ -344,16 +259,16 @@ const cats = [
     {id:'R3',e:'🔦', t:'曾在沒有安靜書桌或足夠光線的環境下寫功課', rev:true, rn:'學習環境不足'},
   ]},
   {theme:'theme-coral', icon:'🎾', name:'休閒與體驗', items:[
-    {id:6,   e:'⛷️', t:'付費學過網球、高爾夫、滑雪或潛水或任何一項運動一年以上', rev:false},
+    {id:6,   e:'⛷️', t:'付費學過網球、高爾夫、滑雪或潛水任一項', rev:false},
     {id:7,   e:'😁', t:'接受過牙齒矯正或心理諮商任一（或家裡負擔得起）', rev:false},
-    {id:8,   e:'🎮', t:'家中有現在熱門的遊戲主機', rev:false},
+    {id:8,   e:'🎮', t:'家中有當時熱門的遊戲主機', rev:false},
     {id:'R4',e:'🍱', t:'曾因經濟因素，在學校無法吃和同學一樣的午餐或零食', rev:true, rn:'飲食資源不均'},
   ]},
   {theme:'theme-purple',icon:'🏡', name:'家庭條件', items:[
     {id:9,   e:'🧹', t:'家中長期雇用清潔人員或家務支援', rev:false},
     {id:10,  e:'🎓', t:'家長都有大學畢業以上學歷',   rev:false},
-    {id:11,  e:'🚗', t:'家裡有一輛車以上',          rev:false},
-    {id:12,  e:'🏙️', t:'家裡在竹北市有住宅',        rev:false},
+    {id:11,  e:'🚗', t:'家裡有兩輛車以上',          rev:false},
+    {id:12,  e:'🏙️', t:'家裡在台北市有住宅',        rev:false},
     {id:13,  e:'📈', t:'家長有為你配置信託、基金、股票或保單任一', rev:false},
     {id:'R5',e:'💼', t:'曾因家裡需要幫忙，必須打工或做大量家事而影響讀書', rev:true, rn:'家庭責任過重'},
   ]},
@@ -363,15 +278,16 @@ const cats = [
     {id:16,  e:'🛫', t:'搭過商務艙以上艙等',        rev:false},
     {id:17,  e:'🏫', t:'家裡有幫你規劃出國讀書',    rev:false},
     {id:18,  e:'⛺', t:'參加過海外夏令營或冬令營',   rev:false},
-    {id:19,  e:'🌐', t:'讀過國際學校或雙語幼兒園、雙語補習班',     rev:false},
+    {id:19,  e:'🌐', t:'讀過國際學校或雙語私校',     rev:false},
     {id:20,  e:'🛂', t:'擁有雙重國籍、他國永久居留或長期居留權', rev:false},
     {id:'R6',e:'🗺️', t:'從來沒有離開過自己生長的縣市去旅遊或參觀', rev:true, rn:'視野受限'},
   ]},
 ];
 
 const bands = [
-  {min:0,  max:4,  name:'中等資源的起點 🌿', desc:'你擁有一些基本資源，但仍有許多機會是你靠自己努力爭取的。你的位置剛好能看見兩種不同的世界。'},
-  {min:5, max:14, name:'資源豐富的起點 🌳', desc:'你成長在相對充裕的環境，許多你視為理所當然的條件並非人人都有。這份認識，是很重要的起步。'},
+  {min:0,  max:4,  name:'資源有限的起點 🌱', desc:'你在相對匱乏的環境中成長，每一步的前進都需要多付出許多力氣。能走到現在，你已經非常了不起。'},
+  {min:5,  max:9,  name:'中等資源的起點 🌿', desc:'你擁有一些基本資源，但仍有許多機會是你靠自己努力爭取的。你的位置剛好能看見兩種不同的世界。'},
+  {min:10, max:14, name:'資源豐富的起點 🌳', desc:'你成長在相對充裕的環境，許多你視為理所當然的條件並非人人都有。這份認識，是很重要的起步。'},
   {min:15, max:20, name:'高度優勢的起點 🚀', desc:'你擁有許多結構性優勢，這些資源為你打開了很多門。理解這件事，不是為了愧疚，而是為了選擇如何善用它。'},
 ];
 
@@ -391,9 +307,6 @@ const TOTAL = allItems.length;
    STATE
 ══════════════════════════════ */
 const answered = {}; // id -> true (checked) | false (explicit no, via second click)
-// submissions store: array of {score, posChecked:Set, revChecked:Set}
-const submissions = [];
-
 /* ══════════════════════════════
    BUILD QUIZ
 ══════════════════════════════ */
@@ -473,7 +386,6 @@ function trySubmit() {
   const score = posItems.filter(it => answered[it.id]).length;
   const revChecked = new Set(revItems.filter(it => answered[it.id]).map(it => it.id));
   const posChecked = new Set(posItems.filter(it => answered[it.id]).map(it => it.id));
-  submissions.push({ score, posChecked, revChecked });
   renderResult(score, posChecked, revChecked);
 }
 
@@ -521,60 +433,6 @@ function renderResult(score, posChecked, revChecked) {
   });
 
   goPage('pageResult');
-}
-
-/* ══════════════════════════════
-   TEACHER DASHBOARD
-══════════════════════════════ */
-function showTeacherModal() {
-  document.getElementById('pwInput').value = '';
-  document.getElementById('pwErr').style.display = 'none';
-  document.getElementById('modalBg').classList.add('open');
-  setTimeout(()=>document.getElementById('pwInput').focus(), 100);
-}
-function closeModal() { document.getElementById('modalBg').classList.remove('open'); }
-function checkPw() {
-  if(document.getElementById('pwInput').value === TEACHER_PW) {
-    closeModal();
-    renderTeacher();
-    goPage('pageTeacher');
-  } else {
-    document.getElementById('pwErr').style.display = 'block';
-    document.getElementById('pwInput').value = '';
-  }
-}
-
-function renderTeacher() {
-  const n = submissions.length;
-  document.getElementById('tCount').textContent = n;
-  if(n === 0) return;
-
-  // item frequency
-  const ic = document.getElementById('tItemChart'); ic.innerHTML = '';
-  posItems.forEach(it => {
-    const cnt = submissions.filter(s => s.posChecked.has(it.id)).length;
-    const pct = n > 0 ? Math.round(cnt/n*100) : 0;
-    const row = document.createElement('div'); row.className = 'freq-row';
-    row.innerHTML = `<div class="freq-label">${it.e} ${it.t}</div><div class="freq-bar-wrap"><div class="freq-bar" style="width:${pct}%"></div></div><div class="freq-pct">${pct}%</div>`;
-    ic.appendChild(row);
-  });
-
-  // reverse frequency
-  const rc2 = document.getElementById('tRevChart'); rc2.innerHTML = '';
-  revItems.forEach(it => {
-    const cnt = submissions.filter(s => s.revChecked.has(it.id)).length;
-    const pct = n > 0 ? Math.round(cnt/n*100) : 0;
-    const row = document.createElement('div'); row.className = 'freq-row';
-    row.innerHTML = `<div class="freq-label">${it.e} ${it.t}</div><div class="freq-bar-wrap"><div class="freq-bar" style="width:${pct}%;background:linear-gradient(90deg,var(--yellow),var(--coral))"></div></div><div class="freq-pct">${pct}%</div>`;
-    rc2.appendChild(row);
-  });
-}
-
-function switchTab(btn, panelId) {
-  document.querySelectorAll('.t-tab').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.t-panel').forEach(p => p.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById(panelId).classList.add('active');
 }
 
 /* ══════════════════════════════
