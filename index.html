@@ -104,9 +104,6 @@ h1{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(30px,6vw,50px
 .band-name{font-family:'Nunito',sans-serif;font-weight:900;font-size:20px;color:var(--text);margin-bottom:8px;}
 .band-desc-r{font-size:14px;color:var(--muted);line-height:1.8;max-width:480px;margin:0 auto 20px;}
 
-/* reverse impact box */
-.impact-box{display:inline-flex;align-items:center;gap:8px;background:#fffbeb;border:2px solid #fde68a;border-radius:12px;padding:8px 16px;font-size:13px;color:#92400e;font-weight:500;}
-
 .rsec{margin-bottom:24px;animation:slideUp .5s ease both;}
 .rsec:nth-child(1){animation-delay:.1s}.rsec:nth-child(2){animation-delay:.18s}
 .rsec:nth-child(3){animation-delay:.26s}.rsec:nth-child(4){animation-delay:.34s}
@@ -205,7 +202,6 @@ h1{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(30px,6vw,50px
     </div>
     <div class="band-name" id="rBandName">—</div>
     <p class="band-desc-r" id="rBandDesc"></p>
-    <div class="impact-box" id="rReverseBox"></div>
   </div>
 
   <div class="rsec">
@@ -397,12 +393,6 @@ function renderResult(score, posChecked, revChecked) {
   document.getElementById('rScore').textContent = score;
   document.getElementById('rBandName').textContent = band.name;
   document.getElementById('rBandDesc').textContent = band.desc;
-
-  const revCount = revChecked.size;
-  const rbox = document.getElementById('rReverseBox');
-  rbox.textContent = revCount > 0
-    ? `⚡ 你勾選了 ${revCount} 道反向題，代表曾有 ${revCount} 種資源不足的經歷`
-    : `✨ 反向題全部沒勾選——你沒有遭遇過這些資源缺乏的困境`;
 
   // positive grid
   const pg = document.getElementById('posGrid'); pg.innerHTML = '';
